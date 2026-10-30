@@ -1,0 +1,13 @@
+{
+  "name": "path2learn",
+  "version": "1.0.0",
+  "description": "path2learn - Kerala & National JEE/NEET Online Coaching Batch Comparison & Community Hub",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["path2learn", "jee", "neet", "keam", "kerala", "coaching", "comparison"],
+  "author": "path2learn",
+  "license": "ISC"
+}

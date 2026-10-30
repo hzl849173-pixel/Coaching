@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>path2learn - Compare Online Coaching Batches & Student Community</title>
+  <meta name="description" content="path2learn helps Kerala & National JEE/NEET aspirants compare online batches from Brilliant Pala, Xylem, Physics Wallah, Allen Digital, and Zephyr.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <aside class="top-notice-bar" aria-label="Announcement">
+    <div class="site-container notice-container">
+      <div class="notice-left">
+        <span class="notice-pill">New</span>
+        <span>Kerala NEET & JEE 2026 Batch Admissions Open • 100% Unbiased Fee & Batch Guide</span>
+      </div>
+      <div class="notice-right">
+        <span>📍 Kerala & National Coaching Hub</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Header -->
+  <header class="site-header">
+    <div class="site-container header-inner">
+      <!-- Brand Logo -->
+      <a href="#" class="brand-wrapper" id="brandHomeLink">
+        <div class="brand-logo-bulb" aria-hidden="true">💡</div>
+        <div class="brand-text">
+          <h1>path2learn</h1>
+          <span>Entrance Coaching Hub</span>
+        </div>
+      </a>
+
+      <!-- Quick Global Search -->
+      <div class="header-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="globalSearchInput" placeholder="Search Brilliant Pala, Xylem, NEET repeaters, fees...">
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <!-- Theme Toggle -->
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light / Dark Mode">
+          <span id="themeIcon">🌙</span>
+          <span id="themeLabel">Dark</span>
+        </button>
+
+        <!-- Compare Action Button -->
+        <button id="headerCompareBtn" class="btn btn-outline compare-badge-btn">
+          <span>Compare</span>
+          <span id="headerCompareCount" class="compare-count-pill">0</span>
+        </button>
+
+        <!-- Ask / Post Button -->
+        <button id="openPostModalBtn" class="btn btn-primary">
+          <span>+ Ask or Review</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="primary-nav-bar" aria-label="Main Navigation">
+    <div class="site-container">
+      <ul class="nav-tabs" id="mainNavTabs">
+        <li class="nav-item active" data-tab="directory">
+          <button class="nav-link-btn">
+            <span>📚 Browse by Institute</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="comparison">
+          <button class="nav-link-btn">
+            <span>⚖️ Compare Batches</span>
+            <span id="navCompareCount" class="compare-count-pill" style="display:none;">0</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="reddit">
+          <button class="nav-link-btn">
+            <span>💬 Aspirant Forum</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="wizard">
+          <button class="nav-link-btn">
+            <span>🧭 Match My Batch</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Step 1: Exam Focus Selector Hero (Not Overwhelming, First Question First!) -->
+  <section class="exam-focus-hero" id="examHeroSection">
+    <div class="site-container">
+      <div class="exam-hero-content">
+        <span class="hero-eyebrow">STEP 1 • SELECT YOUR TARGET EXAM</span>
+        <h2 class="hero-heading">Which exam are you preparing for?</h2>
+        <p class="hero-subheading">
+          Choose your target to see online batches neatly grouped by coaching institutes with transparent fees, Malayalam/English medium, and schedules.
+        </p>
+
+        <!-- Big Clean Exam Selection Cards -->
+        <div class="exam-selector-cards" id="examSelectorCards">
+          <button class="exam-choice-card active" data-exam="NEET">
+            <span class="exam-choice-icon">🩺</span>
+            <div class="exam-choice-info">
+              <strong>NEET Medical</strong>
+              <span>MBBS / BDS • 720 Marks Focus</span>
+            </div>
+          </button>
+
+          <button class="exam-choice-card" data-exam="JEE">
+            <span class="exam-choice-icon">⚙️</span>
+            <div class="exam-choice-info">
+              <strong>JEE Main & Advanced</strong>
+              <span>IITs, NITs & IIITs Focus</span>
+            </div>
+          </button>
+
+          <button class="exam-choice-card" data-exam="KEAM">
+            <span class="exam-choice-icon">🏛️</span>
+            <div class="exam-choice-info">
+              <strong>KEAM Kerala</strong>
+              <span>CET Trivandrum, Barton Hill & State Seats</span>
+            </div>
+          </button>
+
+          <button class="exam-choice-card" data-exam="ALL">
+            <span class="exam-choice-icon">🌟</span>
+            <div class="exam-choice-info">
+              <strong>All Batches</strong>
+              <span>View Full Kerala & National Directory</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Container -->
+  <main class="site-container" id="mainContent">
+
+    <!-- ====================================================================
+         VIEW 1: DIRECTORY ORGANIZED IN INSTITUTE ORDER
+         ==================================================================== -->
+    <div id="viewDirectory" class="directory-view-wrapper">
+      
+      <!-- Sub-filter / Sort Quick Bar (Clean, Uncluttered) -->
+      <div class="directory-controls-bar">
+        <div class="active-exam-indicator">
+          <span>Showing:</span>
+          <strong id="activeExamLabel">NEET (Medical) Batches</strong>
+          <span class="count-badge" id="totalBatchesBadge">0 Batches</span>
+        </div>
+
+        <div class="quick-filters-row">
+          <!-- Stage Filter (Repeaters, Class 12, Class 11, Crash) -->
+          <div class="filter-pill-group">
+            <button class="stage-pill active" data-stage="ALL">All Stages</button>
+            <button class="stage-pill" data-stage="Repeater / Dropper">Repeaters</button>
+            <button class="stage-pill" data-stage="Class 12 Regular">Class 12</button>
+            <button class="stage-pill" data-stage="Class 11 Two-Year">Class 11 (2-Yr)</button>
+            <button class="stage-pill" data-stage="Crash Course">Crash</button>
+          </div>
+
+          <!-- Medium Filter -->
+          <div class="filter-pill-group">
+            <button class="medium-pill active" data-medium="ALL">All Languages</button>
+            <button class="medium-pill" data-medium="Malayalam">Malayalam / Bilingual</button>
+            <button class="medium-pill" data-medium="English">Pure English</button>
+          </div>
+
+          <!-- Sort -->
+          <div class="sort-selector">
+            <label for="sortDropdown">Sort:</label>
+            <select id="sortDropdown">
+              <option value="featured">Institute Priority (Kerala & National)</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating-desc">Top Rated First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Institute-Grouped Content Stream (Clean, Spacious, Uncluttered) -->
+      <section class="institutes-grouped-stream" id="institutesGroupedStream">
+        <!-- Rendered dynamically by institute in orderly blocks -->
+      </section>
+
+    </div>
+
+    <!-- ====================================================================
+         VIEW 2: COMPARISON MATRIX TABLE VIEW
+         ==================================================================== -->
+    <div id="viewComparison" class="comparison-view-container" style="display:none;">
+      <div class="section-heading-box">
+        <span class="hero-eyebrow">HEAD-TO-HEAD</span>
+        <h2 class="section-title">Batch Comparison Matrix</h2>
+        <p class="section-desc">Compare tuition fees, schedules, book shipments, and doubt clearing side-by-side.</p>
+      </div>
+
+      <div id="comparisonEmptyState" class="comparison-empty-state">
+        <div style="font-size: 38px; margin-bottom: 12px;">⚖️</div>
+        <h3>No Batches Selected Yet</h3>
+        <p>Browse the batches below, and click <strong>"+ Compare"</strong> on any 2 or 3 batches to see their differences clearly.</p>
+        <button id="goToBrowseFromCompareBtn" class="btn btn-primary">Browse Batches</button>
+      </div>
+
+      <div id="comparisonTableWrapper" class="comparison-table-wrapper" style="display:none;">
+        <table class="comparison-table" id="comparisonTable">
+          <!-- Populated dynamically -->
+        </table>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         VIEW 3: REDDIT-STYLE FORUM HUB
+         ==================================================================== -->
+    <div id="viewReddit" class="reddit-hub-layout" style="display:none;">
+      <!-- Forum Stream Column -->
+      <section class="forum-stream-column">
+        <div class="section-heading-box" style="margin-bottom: 16px;">
+          <span class="hero-eyebrow">STUDENT COMMUNITY</span>
+          <h2 class="section-title">Aspirant Discussions & Reviews</h2>
+          <p class="section-desc">Ask questions, read honest repeater experiences, and avoid hidden costs.</p>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="forum-header-bar">
+          <div class="forum-sort-tabs">
+            <button class="forum-tab-btn active" data-forum-sort="hot">🔥 Hot</button>
+            <button class="forum-tab-btn" data-forum-sort="top">⭐ Top</button>
+            <button class="forum-tab-btn" data-forum-sort="new">🕒 Newest</button>
+          </div>
+          <button id="forumNewPostBtn" class="btn btn-primary btn-sm">+ Ask a Question</button>
+        </div>
+
+        <!-- Flairs -->
+        <div class="forum-flair-filter" id="flairFilterStrip">
+          <button class="flair-pill active" data-flair="all">All Topics</button>
+          <button class="flair-pill" data-flair="Brilliant vs Xylem">Brilliant vs Xylem</button>
+          <button class="flair-pill" data-flair="Physics Wallah">Physics Wallah</button>
+          <button class="flair-pill" data-flair="Fee & Value">Fee & Value</button>
+          <button class="flair-pill" data-flair="Repeater Advice">Repeater Advice</button>
+          <button class="flair-pill" data-flair="Institute Review">Institute Review</button>
+        </div>
+
+        <!-- Posts stream -->
+        <div class="forum-posts-stream" id="forumPostsStream"></div>
+      </section>
+
+      <!-- Forum Sidebar -->
+      <aside class="forum-sidebar">
+        <div class="forum-box">
+          <h4 class="forum-box-title">About path2learn Community</h4>
+          <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px;">
+            A student-first space helping Kerala & National entrance aspirants choose the right coaching batch without marketing hype.
+          </p>
+          <div style="font-size: 12.5px; color: var(--text-muted); border-top: 1px solid var(--border-light); padding-top: 10px;">
+            <p>👥 <strong>38,000+</strong> Aspirants</p>
+            <p style="margin-top: 4px;">🎓 <strong>1,200+</strong> Verified Medical & Engineering Students</p>
+          </div>
+        </div>
+
+        <div class="forum-box">
+          <h4 class="forum-box-title">Posting Guidelines</h4>
+          <ol class="rules-list">
+            <li>Zero tolerance for coaching PR spam or sales representatives.</li>
+            <li>Always state your context (Repeater, Plus Two, or Parent).</li>
+            <li>When stating fees, mention if it includes GST and printed books.</li>
+          </ol>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ====================================================================
+         VIEW 4: "FIND MY BATCH" DECISION ENGINE WIZARD
+         ==================================================================== -->
+    <div id="viewWizard" class="wizard-container" style="display:none;">
+      <div class="wizard-card">
+        <div class="wizard-step-indicator">
+          <span class="step-number" id="wizardStepLabel">Step 1 of 4</span>
+          <span style="font-size: 13px; color: var(--text-muted);">Confidential Student Guidance</span>
+        </div>
+
+        <!-- Step 1 -->
+        <div id="wizardStep1" class="wizard-step-content">
+          <h3 class="wizard-question-title">Which competitive entrance exam are you preparing for?</h3>
+          <p class="wizard-question-desc">Select your primary goal to filter syllabus depth and question banks.</p>
+          <div class="wizard-options-grid">
+            <div class="wizard-choice-box" data-step="1" data-value="NEET">
+              <span class="choice-title">🩺 NEET (Medical - MBBS / BDS)</span>
+              <span class="choice-sub">NCERT-heavy biology, speed chemistry and physics</span>
+            </div>
+            <div class="wizard-choice-box" data-step="1" data-value="JEE">
+              <span class="choice-title">⚙️ JEE (Main & Advanced)</span>
+              <span class="choice-sub">IIT & NIT focus, deep mathematical derivations</span>
+            </div>
+            <div class="wizard-choice-box" data-step="1" data-value="KEAM">
+              <span class="choice-title">🏛️ KEAM (Kerala Engineering)</span>
+              <span class="choice-sub">CET Trivandrum, Barton Hill, TKM engineering seats</span>
+            </div>
+            <div class="wizard-choice-box" data-step="1" data-value="ANY">
+              <span class="choice-title">🎯 Combined / Still Deciding</span>
+              <span class="choice-sub">Evaluating options across engineering and medical</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div id="wizardStep2" class="wizard-step-content" style="display:none;">
+          <h3 class="wizard-question-title">What is your current academic stage?</h3>
+          <p class="wizard-question-desc">Schedule demands differ wildly between school-goers and full-time repeaters.</p>
+          <div class="wizard-options-grid">
+            <div class="wizard-choice-box" data-step="2" data-value="Repeater / Dropper">
+              <span class="choice-title">🔄 Full-Time Repeater / Dropper</span>
+              <span class="choice-sub">6 to 8 hours daily available for intensive preparation</span>
+            </div>
+            <div class="wizard-choice-box" data-step="2" data-value="Class 12 Regular">
+              <span class="choice-title">🎒 Class 12 Regular School / Board</span>
+              <span class="choice-sub">Need evening/weekend classes without school conflict</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div id="wizardStep3" class="wizard-step-content" style="display:none;">
+          <h3 class="wizard-question-title">What instruction language do you prefer?</h3>
+          <p class="wizard-question-desc">Kerala institutes offer pure Malayalam/Manglish; national platforms use English/Hinglish.</p>
+          <div class="wizard-options-grid">
+            <div class="wizard-choice-box" data-step="3" data-value="Malayalam">
+              <span class="choice-title">🌴 Malayalam + English (Bilingual / Manglish)</span>
+              <span class="choice-sub">Teachers explain concepts in Malayalam; notes in English</span>
+            </div>
+            <div class="wizard-choice-box" data-step="3" data-value="English">
+              <span class="choice-title">🌐 Pure English / National Hinglish</span>
+              <span class="choice-sub">National faculty explaining in English or Hindi mix</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div id="wizardStep4" class="wizard-step-content" style="display:none;">
+          <h3 class="wizard-question-title">What is your realistic annual coaching budget?</h3>
+          <p class="wizard-question-desc">We will suggest only batches that fit your financial budget.</p>
+          <div class="wizard-options-grid">
+            <div class="wizard-choice-box" data-step="4" data-value="budget-low">
+              <span class="choice-title">💰 Budget: Under ₹10,000 / year</span>
+              <span class="choice-sub">Physics Wallah, Xylem starter batches, self-study focused</span>
+            </div>
+            <div class="wizard-choice-box" data-step="4" data-value="budget-mid">
+              <span class="choice-title">⚖️ Mid-Tier: ₹10,000 - ₹25,000 / year</span>
+              <span class="choice-sub">Xylem Yodha, Zephyr, Unacademy with full books</span>
+            </div>
+            <div class="wizard-choice-box" data-step="4" data-value="budget-high">
+              <span class="choice-title">🏆 Premium: ₹30,000 - ₹55,000 / year</span>
+              <span class="choice-sub">Brilliant Pala Residential Stream, Allen Digital Kota</span>
+            </div>
+            <div class="wizard-choice-box" data-step="4" data-value="budget-any">
+              <span class="choice-title">💎 Any Budget (Rigor & Rank Priority)</span>
+              <span class="choice-sub">Show best overall quality regardless of fee</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wizard Nav Buttons -->
+        <div class="wizard-nav-buttons">
+          <button id="wizardBackBtn" class="btn btn-outline" style="visibility:hidden;">← Back</button>
+          <button id="wizardNextBtn" class="btn btn-primary" disabled>Next Step →</button>
+        </div>
+
+        <!-- Wizard Results -->
+        <div id="wizardResultsArea" style="display:none;">
+          <div class="recommendation-match-banner">
+            ✨ Found top matches tailored to your exam, schedule, and budget:
+          </div>
+          <div class="wizard-results-container" id="wizardMatchedCards"></div>
+          <button id="restartWizardBtn" class="btn btn-outline" style="margin-top:20px;">↻ Start Over</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Sticky Bottom Compare Bar -->
+  <aside id="stickyCompareBar" class="sticky-compare-bar hidden" aria-label="Selected Batches for Comparison">
+    <div class="site-container compare-bar-inner">
+      <div class="compare-bar-left">
+        <span class="compare-bar-title">Comparing:</span>
+        <div class="compare-chips" id="stickyCompareChips"></div>
+      </div>
+      <div class="compare-bar-right">
+        <button id="clearAllCompareBtn" class="btn btn-outline btn-sm" style="color:#cbd5e1; border-color:#475569;">Clear All</button>
+        <button id="openCompareFromStickyBtn" class="btn btn-primary">Compare Batches Side-by-Side →</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Modals -->
+  <!-- Modal 1: Batch Detail -->
+  <div id="batchDetailModal" class="modal-backdrop hidden">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalBatchTitle">Batch Details</h3>
+        <button class="modal-close-btn" data-close-modal="batchDetailModal">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBatchBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" data-close-modal="batchDetailModal">Close</button>
+        <button id="modalAddToCompareBtn" class="btn btn-primary">Add to Comparison</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: New Forum Post -->
+  <div id="newPostModal" class="modal-backdrop hidden">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title">Ask a Question or Post a Review</h3>
+        <button class="modal-close-btn" data-close-modal="newPostModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="newPostForm" style="display:flex; flex-direction:column; gap:16px;">
+          <div class="form-field">
+            <label class="form-label" for="postTitleInput">Title (Be specific about the institute or batch):</label>
+            <input type="text" id="postTitleInput" class="form-input" placeholder="e.g., Is Brilliant Pala online repeater batch worth the fee vs Xylem?" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="form-field">
+              <label class="form-label" for="postExamSelect">Target Exam:</label>
+              <select id="postExamSelect" class="form-select">
+                <option value="NEET">NEET (Medical)</option>
+                <option value="JEE Main & Advanced">JEE Main & Advanced</option>
+                <option value="KEAM">KEAM (Kerala Engg)</option>
+                <option value="General Advice">General / Repeater Life</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="postFlairSelect">Discussion Flair:</label>
+              <select id="postFlairSelect" class="form-select">
+                <option value="Brilliant vs Xylem">Brilliant vs Xylem</option>
+                <option value="Physics Wallah">Physics Wallah</option>
+                <option value="Fee & Value">Fee & Value</option>
+                <option value="Repeater Advice">Repeater Advice</option>
+                <option value="Institute Review">Institute Review</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="postAuthorInput">Your Name & Status:</label>
+            <input type="text" id="postAuthorInput" class="form-input" placeholder="e.g., Arjun K (Repeater 2025)" required>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="postBodyInput">Your Query or Experience:</label>
+            <textarea id="postBodyInput" class="form-textarea" placeholder="Share your question or honest feedback regarding teaching quality, materials, or test series..." required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" data-close-modal="newPostModal">Cancel</button>
+        <button id="submitNewPostBtn" class="btn btn-primary">Post to Community</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Thread Details -->
+  <div id="threadDetailModal" class="modal-backdrop hidden">
+    <div class="modal-window" style="max-width:820px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalThreadTitle">Community Discussion</h3>
+        <button class="modal-close-btn" data-close-modal="threadDetailModal">&times;</button>
+      </div>
+      <div class="modal-body" id="modalThreadBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" data-close-modal="threadDetailModal">Close Thread</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="forumData.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
