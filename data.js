@@ -66,6 +66,62 @@ const INSTITUTES_CONFIG = [
   }
 ];
 
+// Helper to generate LMS-style course graphic banners matching the user's reference UI
+function createCourseBanner(theme, institute, exam, title, badge) {
+  const themes = {
+    pala: { bg1: "#0b2545", bg2: "#134074", text: "#eef4f8", accent: "#fbbf24", tagBg: "rgba(251,191,36,0.2)", tagColor: "#fde68a" },
+    xylem: { bg1: "#18181b", bg2: "#27272a", text: "#f4f4f5", accent: "#facc15", tagBg: "rgba(250,204,21,0.25)", tagColor: "#fde047" },
+    pw: { bg1: "#171717", bg2: "#262626", text: "#fafafa", accent: "#ef4444", tagBg: "rgba(239,68,68,0.2)", tagColor: "#fca5a5" },
+    allen: { bg1: "#0f3871", bg2: "#1d4ed8", text: "#ffffff", accent: "#60a5fa", tagBg: "rgba(96,165,250,0.2)", tagColor: "#bfdbfe" },
+    pcmb: { bg1: "#4a0404", bg2: "#7f1d1d", text: "#fff1f2", accent: "#f59e0b", tagBg: "rgba(245,158,11,0.2)", tagColor: "#fde68a" },
+    zephyr: { bg1: "#064e3b", bg2: "#047857", text: "#ecfdf5", accent: "#34d399", tagBg: "rgba(52,211,153,0.2)", tagColor: "#a7f3d0" },
+    rays: { bg1: "#450a0a", bg2: "#881337", text: "#fff1f2", accent: "#fb7185", tagBg: "rgba(251,113,133,0.2)", tagColor: "#fecdd3" },
+    unacad: { bg1: "#0c1e33", bg2: "#164e63", text: "#f0fdfa", accent: "#2dd4bf", tagBg: "rgba(45,212,191,0.2)", tagColor: "#99f6e4" }
+  };
+
+  const t = themes[theme] || themes.pala;
+  const shortTitle = title.length > 24 ? title.substring(0, 24) + "..." : title;
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="100%" height="100%">
+    <defs>
+      <linearGradient id="g_${theme}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${t.bg1}" />
+        <stop offset="100%" stop-color="${t.bg2}" />
+      </linearGradient>
+      <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
+      </pattern>
+    </defs>
+    <rect width="400" height="220" fill="url(#g_${theme})" />
+    <rect width="400" height="220" fill="url(#grid)" />
+    
+    <!-- Geometric Graphic Art Background -->
+    <circle cx="330" cy="50" r="85" fill="${t.accent}" opacity="0.12" />
+    <circle cx="70" cy="180" r="60" fill="${t.accent}" opacity="0.08" />
+    <path d="M 260 170 L 320 110 L 380 170 Z" fill="${t.accent}" opacity="0.15" />
+    
+    <!-- Top Pill / Institute Badge -->
+    <rect x="24" y="24" width="auto" height="24" rx="4" fill="${t.tagBg}" />
+    <text x="32" y="40" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="11" font-weight="700" fill="${t.tagColor}" letter-spacing="0.5">${institute.toUpperCase()}</text>
+    
+    <!-- Exam Big Watermark -->
+    <text x="375" y="195" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="52" font-weight="900" fill="${t.text}" opacity="0.08">${exam}</text>
+
+    <!-- Center Icon & Batch Heading -->
+    <circle cx="50" cy="110" r="24" fill="${t.accent}" opacity="0.9" />
+    <text x="50" y="117" text-anchor="middle" font-family="sans-serif" font-size="20" font-weight="900" fill="#000">${exam === "NEET" ? "🩺" : (exam === "KEAM" ? "🏛️" : "⚙️")}</text>
+
+    <text x="86" y="104" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="19" font-weight="800" fill="${t.text}" letter-spacing="-0.3">${shortTitle}</text>
+    <text x="86" y="125" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="12" font-weight="600" fill="${t.accent}">${exam} • ${badge}</text>
+    
+    <!-- Bottom Micro-Strip -->
+    <line x1="24" y1="165" x2="376" y2="165" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+    <text x="24" y="188" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="11" font-weight="600" fill="${t.text}" opacity="0.7">ONLINE LIVE &amp; RECORDED • PHYSICAL BOOKS</text>
+  </svg>`;
+
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
 // Comprehensive Database of Online Batches (24 Detailed Batches)
 const BATCHES_DATA = [
   // --- BRILLIANT STUDY CENTRE PALA ---
@@ -94,6 +150,7 @@ const BATCHES_DATA = [
     rating: 4.8,
     reviewsCount: 382,
     badge: "Kerala Gold Standard",
+    thumbnail: createCourseBanner("pala", "Brilliant Pala", "NEET", "NEET Repeaters 2026", "Medical Intensive"),
     highlights: [
       "Demanding weekly model exams with statewide rank benchmarking among 25k+ students",
       "High-yield question banks specifically tuned to past 10-year NEET trends",
@@ -129,6 +186,7 @@ const BATCHES_DATA = [
     rating: 4.8,
     reviewsCount: 295,
     badge: "Top KEAM & JEE Ranks",
+    thumbnail: createCourseBanner("pala", "Brilliant Pala", "JEE", "JEE Main & Advanced", "IIT & NIT Target"),
     highlights: [
       "Produces the overwhelming majority of top KEAM and JEE rankers in Kerala",
       "Maths and Physics problem sets strictly tailored to Advanced difficulty",
@@ -163,6 +221,7 @@ const BATCHES_DATA = [
     rating: 4.7,
     reviewsCount: 190,
     badge: "Speed & Shortcut Specialist",
+    thumbnail: createCourseBanner("pala", "Brilliant Pala", "KEAM", "KEAM Speed Sprint", "State Top Ranker"),
     highlights: [
       "Designed specifically for KEAM speed (120 questions in 150 mins)",
       "High accuracy calculation shortcuts without electronic calculators",
@@ -197,6 +256,7 @@ const BATCHES_DATA = [
     rating: 4.6,
     reviewsCount: 210,
     badge: "Long-Term Foundation",
+    thumbnail: createCourseBanner("pala", "Brilliant Pala", "NEET", "2-Year NEET Foundation", "Class 11 & 12"),
     highlights: [
       "Paces the massive NEET syllabus smoothly over 2 full academic years",
       "Ensures board marks safety alongside high-difficulty entrance coaching",
@@ -233,6 +293,7 @@ const BATCHES_DATA = [
     rating: 4.6,
     reviewsCount: 640,
     badge: "Best Value for Kerala",
+    thumbnail: createCourseBanner("xylem", "Xylem Learning", "NEET", "Yodha NEET 2026", "Malayalam Medium"),
     highlights: [
       "Affordable pricing with full Malayalam explanations by popular teachers",
       "Engaging teaching style, high energy and student-friendly approach",
@@ -268,6 +329,7 @@ const BATCHES_DATA = [
     rating: 4.6,
     reviewsCount: 420,
     badge: "Board + Entrance Balance",
+    thumbnail: createCourseBanner("xylem", "Xylem Learning", "JEE", "Agni Class 12 + KEAM", "DHSE + Entrance"),
     highlights: [
       "Synchronized with Kerala DHSE Plus Two syllabus while teaching KEAM shortcuts",
       "Focus on school marks safety alongside engineering entrance preparation",
@@ -302,6 +364,7 @@ const BATCHES_DATA = [
     rating: 4.5,
     reviewsCount: 310,
     badge: "KEAM State Seat Specialist",
+    thumbnail: createCourseBanner("xylem", "Xylem Learning", "KEAM", "Target KEAM 2026", "Kerala Engg Seats"),
     highlights: [
       "Targets Kerala government college engineering admissions (CET, GECB, GECT)",
       "Mathematics problem-solving drills with non-calculator calculation methods",
@@ -336,6 +399,7 @@ const BATCHES_DATA = [
     rating: 4.7,
     reviewsCount: 280,
     badge: "Friendly Concept Buildup",
+    thumbnail: createCourseBanner("xylem", "Xylem Learning", "NEET", "Prarambh 2-Year NEET", "Visual Concept Learning"),
     highlights: [
       "Zero-pressure concept buildup that makes biology and chemistry visual and intuitive",
       "Teachers speak relatable Malayalam which eases the transition from Class 10",
@@ -372,6 +436,7 @@ const BATCHES_DATA = [
     rating: 4.5,
     reviewsCount: 1120,
     badge: "Lowest Price Champion",
+    thumbnail: createCourseBanner("pw", "Physics Wallah", "NEET", "Yakeen Malayalam 2026", "PW Affordable Wing"),
     highlights: [
       "Extremely affordable with massive question bank and DPP sheets",
       "All-India ranking competition with hundreds of thousands of aspirants",
@@ -407,6 +472,7 @@ const BATCHES_DATA = [
     rating: 4.6,
     reviewsCount: 950,
     badge: "High Problem Density",
+    thumbnail: createCourseBanner("pw", "Physics Wallah", "JEE", "Lakshya JEE 12th", "Class 12 + JEE Main"),
     highlights: [
       "Top-tier problem solving speed and shortcut methods for JEE Main",
       "Includes free access to Khazana recorded lectures of legendary teachers",
@@ -441,6 +507,7 @@ const BATCHES_DATA = [
     rating: 4.6,
     reviewsCount: 1450,
     badge: "National Heavyweight",
+    thumbnail: createCourseBanner("pw", "Physics Wallah", "JEE", "Prayas JEE Droppers", "All-India Scale"),
     highlights: [
       "Legendary national teachers for Physical Chemistry and Calculus",
       "Huge student volume gives realistic percentile benchmarking",
@@ -475,6 +542,7 @@ const BATCHES_DATA = [
     rating: 4.5,
     reviewsCount: 890,
     badge: "Budget 2-Year Program",
+    thumbnail: createCourseBanner("pw", "Physics Wallah", "NEET", "Arjuna NEET 11th", "Two-Year Budget Course"),
     highlights: [
       "Provides complete 2-year preparation at less than the cost of 1 month of offline tuition",
       "Includes animated anatomy and cell biology visuals",
@@ -511,6 +579,7 @@ const BATCHES_DATA = [
     rating: 4.7,
     reviewsCount: 840,
     badge: "Kota Gold Standard",
+    thumbnail: createCourseBanner("allen", "Allen Digital", "NEET", "Leader NEET Online", "Kota Leader Series"),
     highlights: [
       "Gold-standard curriculum and pedagogy trusted nationally for decades",
       "Allen Test Series is considered closest in difficulty to the real NEET exam",
@@ -546,6 +615,7 @@ const BATCHES_DATA = [
     rating: 4.8,
     reviewsCount: 610,
     badge: "Elite Advanced Prep",
+    thumbnail: createCourseBanner("allen", "Allen Digital", "JEE", "Achiever JEE Advanced", "Kota Top 500 Rankers"),
     highlights: [
       "Highest quality conceptual problem selection for top 500 JEE Advanced ranks",
       "Challenging multi-concept physics and physical chemistry problems",
@@ -580,6 +650,7 @@ const BATCHES_DATA = [
     rating: 4.7,
     reviewsCount: 430,
     badge: "Premium 2-Year Program",
+    thumbnail: createCourseBanner("allen", "Allen Digital", "JEE", "Nurture JEE 2-Year", "Class 11 & 12 Kota"),
     highlights: [
       "Builds deep conceptual roots in mechanics, electrodynamics, and calculus",
       "National peer group interaction pushing students to stay at peak performance",
@@ -616,6 +687,7 @@ const BATCHES_DATA = [
     rating: 4.6,
     reviewsCount: 220,
     badge: "Disciplined Repeaters Focus",
+    thumbnail: createCourseBanner("pcmb", "PCMB Entrance", "NEET", "Elite Medical Repeater", "Thrissur & Kochi"),
     highlights: [
       "Trusted central Kerala legacy in Thrissur, Ernakulam, and Palakkad",
       "Disciplined daily homework tracking with score updates sent to parents",
@@ -650,6 +722,7 @@ const BATCHES_DATA = [
     rating: 4.5,
     reviewsCount: 160,
     badge: "Calculations Master",
+    thumbnail: createCourseBanner("pcmb", "PCMB Entrance", "KEAM", "KEAM Maths Sprint", "Speed Calculations"),
     highlights: [
       "Intensive focus on KEAM Mathematics Paper (120 marks) with non-calculator shortcuts",
       "Past 12-year question trends broken down topic by topic",
@@ -686,6 +759,7 @@ const BATCHES_DATA = [
     rating: 4.4,
     reviewsCount: 180,
     badge: "Personal Attention",
+    thumbnail: createCourseBanner("zephyr", "Zephyr Entrance", "NEET", "Target NEET Repeater", "2-Way Voice Doubts"),
     highlights: [
       "Smaller virtual batch size allowing direct mic questions to teachers",
       "Solid 30-year legacy in Trivandrum and Ernakulam coaching circles",
@@ -720,6 +794,7 @@ const BATCHES_DATA = [
     rating: 4.4,
     reviewsCount: 140,
     badge: "Balanced & Supportive",
+    thumbnail: createCourseBanner("zephyr", "Zephyr Entrance", "JEE", "Apex JEE Engineering", "Trivandrum Legacy"),
     highlights: [
       "Careful balance between school Plus Two syllabus and JEE Main problem sets",
       "Approachability of veteran teachers who mentor students personally",
@@ -756,6 +831,7 @@ const BATCHES_DATA = [
     rating: 4.3,
     reviewsCount: 140,
     badge: "Strong Biology & Chemistry Focus",
+    thumbnail: createCourseBanner("rays", "Rays Edutech", "NEET", "Calicut Medical Stream", "NCERT 360/360 Focus"),
     highlights: [
       "Deeply respected in North Kerala / Malabar region with veteran teachers",
       "Intensive NCERT line-by-line drilling for Biology (360/360 target)",
@@ -790,6 +866,7 @@ const BATCHES_DATA = [
     rating: 4.4,
     reviewsCount: 110,
     badge: "NCERT Mastery",
+    thumbnail: createCourseBanner("rays", "Rays Edutech", "NEET", "Class 12 Medical Bridge", "Board + Entrance"),
     highlights: [
       "Helps regular Plus Two state syllabus students master tricky NCERT lines",
       "Ideal foundation for students planning to give NEET without taking a drop year",
@@ -826,6 +903,7 @@ const BATCHES_DATA = [
     rating: 4.4,
     reviewsCount: 310,
     badge: "Flexible Educator Choice",
+    thumbnail: createCourseBanner("unacad", "Unacademy", "NEET", "Kerala NEET Plus", "Top Malayalam Educators"),
     highlights: [
       "If you don't like one teacher's style, switch to another batch at zero extra cost",
       "Interactive 'Raise a Hand' feature lets you talk directly to teachers in class",
@@ -861,6 +939,7 @@ const BATCHES_DATA = [
     rating: 4.5,
     reviewsCount: 240,
     badge: "High-Paced Revision",
+    thumbnail: createCourseBanner("unacad", "Unacademy", "JEE", "Phoenix JEE Fastrack", "Rank Booster Sprint"),
     highlights: [
       "Rapid syllabus coverage with focus on high-weightage topics",
       "Live class gamified leaderboards keeping motivation high",

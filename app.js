@@ -39,16 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const body = document.body;
   const themeToggleBtn = document.getElementById("themeToggleBtn");
   const themeIcon = document.getElementById("themeIcon");
-  const themeLabel = document.getElementById("themeLabel");
 
   const brandHomeLink = document.getElementById("brandHomeLink");
-  const mainNavTabs = document.getElementById("mainNavTabs");
   const globalSearchInput = document.getElementById("globalSearchInput");
 
-  // Hero Exam Selector
-  const examSelectorCards = document.getElementById("examSelectorCards");
-  const examHeroSection = document.getElementById("examHeroSection");
-  const activeExamLabel = document.getElementById("activeExamLabel");
+  // Header & Catalog Controls
+  const headerExamDropdown = document.getElementById("headerExamDropdown");
+  const examFilterPillRow = document.getElementById("examFilterPillRow");
   const totalBatchesBadge = document.getElementById("totalBatchesBadge");
   const sortDropdown = document.getElementById("sortDropdown");
 
@@ -61,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Compare Dock & Elements
   const headerCompareCount = document.getElementById("headerCompareCount");
-  const navCompareCount = document.getElementById("navCompareCount");
   const stickyCompareBar = document.getElementById("stickyCompareBar");
   const stickyCompareChips = document.getElementById("stickyCompareChips");
   const clearAllCompareBtn = document.getElementById("clearAllCompareBtn");
@@ -124,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function loadStoredCompareIds() {
     try {
       const stored = localStorage.getItem("path2learn_compare");
-      return stored ? JSON.parse(stored) : [];
+      return stored ? JSON.parse(stored).filter(id => BATCHES_DATA.some(b => b.id === id)) : [];
     } catch {
       return [];
     }
@@ -146,11 +142,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (theme === "dark") {
       body.classList.add("dark-theme");
       themeIcon.textContent = "☀️";
-      themeLabel.textContent = "Light";
     } else {
       body.classList.remove("dark-theme");
       themeIcon.textContent = "🌙";
-      themeLabel.textContent = "Dark";
     }
     localStorage.setItem("path2learn_theme", theme);
   }
@@ -166,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function switchTab(tabKey) {
     state.activeTab = tabKey;
 
-    document.querySelectorAll(".nav-item").forEach(item => {
+    document.querySelectorAll(".header-nav-btn").forEach(item => {
       item.classList.toggle("active", item.getAttribute("data-tab") === tabKey);
     });
 
@@ -175,33 +169,27 @@ document.addEventListener("DOMContentLoaded", () => {
     viewReddit.style.display = "none";
     viewWizard.style.display = "none";
 
-    // Show/hide the Step 1 exam hero based on tab
     if (tabKey === "directory") {
-      examHeroSection.style.display = "block";
       viewDirectory.style.display = "block";
       renderInstituteGroupedDirectory();
-    } else {
-      examHeroSection.style.display = "none";
-      if (tabKey === "comparison") {
-        viewComparison.style.display = "block";
-        renderComparisonView();
-      } else if (tabKey === "reddit") {
-        viewReddit.style.display = "grid";
-        renderForumPosts();
-      } else if (tabKey === "wizard") {
-        viewWizard.style.display = "block";
-        renderWizardStep();
-      }
+    } else if (tabKey === "comparison") {
+      viewComparison.style.display = "block";
+      renderComparisonView();
+    } else if (tabKey === "reddit") {
+      viewReddit.style.display = "grid";
+      renderForumPosts();
+    } else if (tabKey === "wizard") {
+      viewWizard.style.display = "block";
+      renderWizardStep();
     }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  mainNavTabs.addEventListener("click", (e) => {
-    const navItem = e.target.closest(".nav-item");
-    if (navItem) {
-      switchTab(navItem.getAttribute("data-tab"));
-    }
+  document.querySelectorAll(".header-nav-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      switchTab(btn.getAttribute("data-tab"));
+    });
   });
 
   brandHomeLink.addEventListener("click", (e) => {
@@ -214,29 +202,34 @@ document.addEventListener("DOMContentLoaded", () => {
   openCompareFromStickyBtn.addEventListener("click", () => switchTab("comparison"));
 
   // ------------------------------------------------------------------------
-  // Step 1: Exam Selection (The First Question for Students)
+  // Exam Selection (Dropdown & Minimalist Pills)
   // ------------------------------------------------------------------------
-  examSelectorCards.addEventListener("click", (e) => {
-    const card = e.target.closest(".exam-choice-card");
-    if (!card) return;
+  function selectExam(examCode) {
+    state.activeExam = examCode;
+    if (headerExamDropdown) headerExamDropdown.value = examCode;
 
-    document.querySelectorAll(".exam-choice-card").forEach(c => c.classList.remove("active"));
-    card.classList.add("active");
+    document.querySelectorAll("#examFilterPillRow .filter-chip-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-exam") === examCode);
+    });
 
-    state.activeExam = card.getAttribute("data-exam");
-    updateActiveExamLabels();
-    renderInstituteGroupedDirectory();
+    if (state.activeTab !== "directory") {
+      switchTab("directory");
+    } else {
+      renderInstituteGroupedDirectory();
+    }
+  }
+
+  headerExamDropdown?.addEventListener("change", (e) => {
+    selectExam(e.target.value);
   });
 
-  function updateActiveExamLabels() {
-    const labels = {
-      NEET: "NEET (Medical) Batches",
-      JEE: "JEE Main & Advanced Batches",
-      KEAM: "KEAM Kerala Engineering Batches",
-      ALL: "All Entrance Batches (Kerala & National)"
-    };
-    activeExamLabel.textContent = labels[state.activeExam] || "Coaching Batches";
-  }
+  examFilterPillRow?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".filter-chip-btn");
+    if (btn) {
+      const exam = btn.getAttribute("data-exam");
+      selectExam(exam);
+    }
+  });
 
   // Quick filters: Stage (Repeaters vs 12th)
   document.querySelectorAll(".stage-pill").forEach(pill => {
@@ -294,16 +287,22 @@ document.addEventListener("DOMContentLoaded", () => {
         if (batch.category !== state.stageFilter) return false;
       }
 
-      // 3. Medium filter
+      // 3. Medium filter (Pure English vs Malayalam)
       if (state.mediumFilter !== "ALL") {
-        if (!batch.language.toLowerCase().includes(state.mediumFilter.toLowerCase())) {
-          return false;
+        const langLower = (batch.language || "").toLowerCase();
+        if (state.mediumFilter === "Malayalam") {
+          if (!langLower.includes("malayalam")) return false;
+        } else if (state.mediumFilter === "English") {
+          if (langLower.includes("malayalam")) return false;
         }
       }
 
-      // 4. Search query
+      // 4. Search query matching across title, institute, acronym, exam, category, and highlights
       if (state.searchQuery) {
-        const haystack = `${batch.name} ${batch.institute} ${batch.targetExam} ${batch.language} ${batch.schedule}`.toLowerCase();
+        const inst = state.institutes.find(i => i.name === batch.institute);
+        const shortCode = inst ? inst.shortCode : "";
+        const highlightsStr = (batch.highlights || []).join(" ");
+        const haystack = `${batch.name} ${batch.institute} ${shortCode} ${batch.targetExam} ${batch.category} ${batch.language} ${batch.schedule} ${highlightsStr}`.toLowerCase();
         if (!haystack.includes(state.searchQuery)) return false;
       }
 
@@ -366,16 +365,13 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
       document.getElementById("clearSearchCriteriaBtn")?.addEventListener("click", () => {
-        state.activeExam = "NEET";
         state.stageFilter = "ALL";
         state.mediumFilter = "ALL";
         state.searchQuery = "";
         globalSearchInput.value = "";
-        document.querySelectorAll(".exam-choice-card").forEach(c => c.classList.toggle("active", c.getAttribute("data-exam") === "NEET"));
         document.querySelectorAll(".stage-pill").forEach(p => p.classList.toggle("active", p.getAttribute("data-stage") === "ALL"));
         document.querySelectorAll(".medium-pill").forEach(p => p.classList.toggle("active", p.getAttribute("data-medium") === "ALL"));
-        updateActiveExamLabels();
-        renderInstituteGroupedDirectory();
+        selectExam("NEET");
       });
       return;
     }
@@ -388,57 +384,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const isCompared = state.comparedBatchIds.includes(batch.id);
 
     return `
-      <article class="batch-card" data-batch-id="${batch.id}">
-        <div class="batch-card-top">
-          <div class="badge-row">
-            <span class="badge badge-exam">${escapeHTML(batch.targetExam)}</span>
-            <span class="badge badge-category">${escapeHTML(batch.category)}</span>
-            <span class="badge badge-language">${escapeHTML(batch.language)}</span>
-            ${batch.badge ? `<span class="badge badge-highlight">★ ${escapeHTML(batch.badge)}</span>` : ""}
+      <article class="course-lms-card" data-batch-id="${batch.id}">
+        <!-- Top Course Thumbnail Banner with Rating Pill -->
+        <div class="card-thumb-box view-details-trigger" data-id="${batch.id}">
+          <img src="${batch.thumbnail}" alt="${escapeHTML(batch.name)}" class="card-thumb-img" loading="lazy" />
+          <div class="thumb-rating-badge">
+            <span class="star-icon">⭐</span>
+            <span>${batch.rating.toFixed(1)}</span>
           </div>
-
-          <h4 class="batch-title">${escapeHTML(batch.name)}</h4>
-
-          <!-- Compact, clean specs -->
-          <div class="spec-grid-compact">
-            <div class="spec-cell">
-              <span class="spec-cell-label">Schedule</span>
-              <span class="spec-cell-val">${escapeHTML(batch.schedule.split('(')[0].trim())}</span>
-            </div>
-            <div class="spec-cell">
-              <span class="spec-cell-label">Duration</span>
-              <span class="spec-cell-val">${batch.durationMonths} Months</span>
-            </div>
-            <div class="spec-cell">
-              <span class="spec-cell-label">Study Material</span>
-              <span class="spec-cell-val">${batch.studyMaterial.includes("Printed") || batch.studyMaterial.includes("Hardcopy") || batch.studyMaterial.includes("box set") ? "Physical Books" : "Digital PDFs"}</span>
-            </div>
-            <div class="spec-cell">
-              <span class="spec-cell-label">Doubt Clearance</span>
-              <span class="spec-cell-val">${escapeHTML(batch.doubtClearing.split('+')[0].trim())}</span>
-            </div>
+          <div class="thumb-exam-pill">
+            <span>${escapeHTML(batch.targetExam)}</span>
           </div>
-
-          <!-- 2 Key Highlights -->
-          <ul class="concise-perks-list">
-            ${batch.highlights.slice(0, 2).map(h => `<li>${escapeHTML(h)}</li>`).join("")}
-          </ul>
         </div>
 
-        <div class="batch-card-bottom">
-          <div class="price-display-box">
-            ${batch.originalPrice ? `<span class="price-cut">₹${batch.originalPrice.toLocaleString('en-IN')}</span>` : ""}
-            <div class="price-main">₹${batch.price.toLocaleString('en-IN')}</div>
-            <span class="price-gst-badge">✓ GST Included</span>
+        <!-- Card Content Area -->
+        <div class="card-body-box">
+          <h4 class="card-course-title view-details-trigger" data-id="${batch.id}" title="${escapeHTML(batch.name)}">
+            ${escapeHTML(batch.name)}
+          </h4>
+
+          <!-- Author / Institute & Duration Row -->
+          <div class="card-meta-row">
+            <span class="card-author-text">${escapeHTML(batch.institute)}</span>
+            <span class="card-duration-text">${batch.durationMonths} Months</span>
           </div>
 
-          <div class="card-action-btns">
-            <button class="btn btn-outline btn-sm view-details-btn" data-id="${batch.id}">
-              Details
-            </button>
-            <button class="btn-compare ${isCompared ? 'selected' : ''}" data-id="${batch.id}">
-              ${isCompared ? "✓ In Compare" : "+ Compare"}
-            </button>
+          <!-- Bottom Price & Action Row -->
+          <div class="card-footer-row">
+            <div class="card-price-wrap">
+              <span class="card-price-num">₹${batch.price.toLocaleString('en-IN')}</span>
+              <span class="card-gst-tag">GST Included</span>
+            </div>
+
+            <div class="card-actions-wrap">
+              <button class="btn-lms-compare ${isCompared ? 'in-compare' : ''}" data-id="${batch.id}">
+                <span class="btn-icon">${isCompared ? '✓' : '🛍️'}</span>
+                <span>${isCompared ? 'In Compare' : 'Add to Compare'}</span>
+              </button>
+            </div>
           </div>
         </div>
       </article>
@@ -447,15 +430,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function attachBatchCardListeners() {
     // Compare buttons
-    document.querySelectorAll(".btn-compare").forEach(btn => {
+    document.querySelectorAll(".btn-lms-compare, .btn-compare").forEach(btn => {
       btn.addEventListener("click", (e) => {
+        e.stopPropagation();
         const id = e.currentTarget.getAttribute("data-id");
         toggleCompareBatch(id);
       });
     });
 
-    // View details
-    document.querySelectorAll(".view-details-btn").forEach(btn => {
+    // View details (on title, thumbnail or details button)
+    document.querySelectorAll(".view-details-trigger, .view-details-btn").forEach(btn => {
       btn.addEventListener("click", (e) => {
         const id = e.currentTarget.getAttribute("data-id");
         openBatchDetailModal(id);
@@ -487,9 +471,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateCompareUI() {
     const count = state.comparedBatchIds.length;
-    headerCompareCount.textContent = count;
-    navCompareCount.textContent = count;
-    navCompareCount.style.display = count > 0 ? "inline-block" : "none";
+    if (headerCompareCount) headerCompareCount.textContent = count;
 
     if (count > 0) {
       stickyCompareBar.classList.remove("hidden");
@@ -650,15 +632,15 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
 
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-        <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:14px; border-radius:6px;">
-          <strong style="color:#166534; font-size:13.5px;">Key Strengths:</strong>
-          <ul style="padding-left:18px; font-size:12.5px; color:#14532d; margin-top:6px;">
+        <div class="strength-box">
+          <strong>Key Strengths:</strong>
+          <ul>
             ${batch.highlights.map(h => `<li>${escapeHTML(h)}</li>`).join("")}
           </ul>
         </div>
-        <div style="background:#fef2f2; border:1px solid #fecaca; padding:14px; border-radius:6px;">
-          <strong style="color:#991b1b; font-size:13.5px;">Points to Keep in Mind:</strong>
-          <ul style="padding-left:18px; font-size:12.5px; color:#7f1d1d; margin-top:6px;">
+        <div class="con-box">
+          <strong>Points to Keep in Mind:</strong>
+          <ul>
             ${batch.cons.map(c => `<li>${escapeHTML(c)}</li>`).join("")}
           </ul>
         </div>
@@ -965,6 +947,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     wizardBackBtn.style.visibility = step > 1 ? "visible" : "hidden";
+    wizardNextBtn.style.display = "";
     wizardNextBtn.textContent = step === 4 ? "Show My Best Matches ✨" : "Next Step →";
 
     const currentVal = getCurrentStepAnswer(step);
@@ -1017,6 +1000,7 @@ document.addEventListener("DOMContentLoaded", () => {
   restartWizardBtn.addEventListener("click", () => {
     state.wizard.step = 1;
     state.wizard.answers = { exam: null, stage: null, language: null, budget: null };
+    document.querySelectorAll(".wizard-choice-box").forEach(box => box.classList.remove("selected"));
     renderWizardStep();
   });
 
@@ -1041,7 +1025,7 @@ document.addEventListener("DOMContentLoaded", () => {
         reasons.push(`Targeted directly for ${batch.targetExam}`);
       }
 
-      if (batch.category.includes(stage)) {
+      if (stage && batch.category.includes(stage)) {
         score += 25;
         reasons.push(`Fits your ${stage} schedule`);
       }
@@ -1073,43 +1057,50 @@ document.addEventListener("DOMContentLoaded", () => {
     scoredBatches.sort((a, b) => b.score - a.score);
     const topMatches = scoredBatches.slice(0, 3);
 
-    wizardMatchedCards.innerHTML = topMatches.map(({ batch, score, reasons }) => `
-      <div class="batch-card" style="margin-top:12px;">
-        <div class="batch-card-top">
-          <div class="badge-row">
-            <span class="badge badge-highlight" style="background:#dcfce7; color:#166534; border-color:#86efac;">
-              ${score}% Match Score
-            </span>
-            <span class="badge badge-category">${escapeHTML(batch.institute)}</span>
-            <span class="badge badge-exam">${escapeHTML(batch.targetExam)}</span>
+    wizardMatchedCards.innerHTML = topMatches.map(({ batch, score, reasons }) => {
+      const isCompared = state.comparedBatchIds.includes(batch.id);
+
+      return `
+        <article class="wizard-match-card" data-batch-id="${batch.id}">
+          <div class="wizard-match-main">
+            <div class="wizard-match-badges">
+              <span class="badge badge-highlight">${score}% Match Score</span>
+              <span class="badge badge-category">${escapeHTML(batch.institute)}</span>
+              <span class="badge badge-exam">${escapeHTML(batch.targetExam)}</span>
+              <span class="badge badge-language">${escapeHTML(batch.language)}</span>
+            </div>
+
+            <h4 class="wizard-match-title view-details-trigger" data-id="${batch.id}" style="cursor:pointer;">
+              ${escapeHTML(batch.name)}
+            </h4>
+
+            <div class="wizard-reasons-box">
+              <strong>Why this fits your profile:</strong>
+              <ul>
+                ${reasons.map(r => `<li>✓ ${escapeHTML(r)}</li>`).join("")}
+              </ul>
+            </div>
           </div>
 
-          <h4 class="batch-title">${escapeHTML(batch.name)}</h4>
+          <div class="wizard-match-side">
+            <div class="wizard-match-pricing">
+              <div class="price-main">₹${batch.price.toLocaleString('en-IN')}</div>
+              <span class="price-gst-badge">✓ GST Included</span>
+            </div>
 
-          <div style="background:var(--bg-page); border:1px solid var(--border-light); padding:12px 14px; border-radius:6px; font-size:13px;">
-            <strong style="color:var(--primary);">Why this fits you:</strong>
-            <ul style="padding-left:16px; margin-top:6px; color:var(--text-secondary);">
-              ${reasons.map(r => `<li>${escapeHTML(r)}</li>`).join("")}
-            </ul>
+            <div class="wizard-match-actions">
+              <button class="btn btn-outline btn-sm view-details-trigger" data-id="${batch.id}">
+                Details
+              </button>
+              <button class="btn-lms-compare ${isCompared ? 'in-compare' : ''}" data-id="${batch.id}">
+                <span class="btn-icon">${isCompared ? '✓' : '🛍️'}</span>
+                <span>${isCompared ? 'In Compare' : 'Add to Compare'}</span>
+              </button>
+            </div>
           </div>
-        </div>
-
-        <div class="batch-card-bottom">
-          <div class="price-display-box">
-            <div class="price-main">₹${batch.price.toLocaleString('en-IN')}</div>
-            <span class="price-gst-badge">✓ GST Included</span>
-          </div>
-          <div class="card-action-btns">
-            <button class="btn btn-primary btn-sm view-details-btn" data-id="${batch.id}">
-              Details
-            </button>
-            <button class="btn-compare ${state.comparedBatchIds.includes(batch.id) ? 'selected' : ''}" data-id="${batch.id}">
-              ${state.comparedBatchIds.includes(batch.id) ? "✓ In Compare" : "+ Compare"}
-            </button>
-          </div>
-        </div>
-      </div>
-    `).join("");
+        </article>
+      `;
+    }).join("");
 
     attachBatchCardListeners();
   }
@@ -1151,7 +1142,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // ------------------------------------------------------------------------
   // Initial Boot
   // ------------------------------------------------------------------------
-  updateActiveExamLabels();
+  selectExam(state.activeExam || "NEET");
   updateCompareUI();
-  renderInstituteGroupedDirectory();
 });
