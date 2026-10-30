@@ -725,15 +725,6 @@ body.dark-theme .filter-chip-btn.active {
   box-shadow: var(--shadow-card);
 }
 
-.institute-header-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-hairline);
-  margin-bottom: 20px;
-}
-
 /* Institute Header Banner */
 .institute-header-banner {
   display: flex;
@@ -742,6 +733,8 @@ body.dark-theme .filter-chip-btn.active {
   padding-bottom: 18px;
   border-bottom: 1px solid var(--border-hairline);
   margin-bottom: 22px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .institute-profile {
@@ -791,7 +784,34 @@ body.dark-theme .filter-chip-btn.active {
   color: var(--text-secondary);
 }
 
-/* Batches Grid under each Institute - 3-column LMS layout */
+.institute-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mobile-swipe-indicator {
+  display: none;
+}
+@media (max-width: 860px) {
+  .mobile-swipe-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary);
+    background-color: var(--primary-subtle);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    letter-spacing: 0.02em;
+    user-select: none;
+  }
+}
+
+/* Batches Grid under each Institute - 3-column LMS layout on desktop */
 .institute-batches-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -859,27 +879,15 @@ body.dark-theme .thumb-rating-badge {
 }
 
 .thumb-exam-pill {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(4px);
-  color: #ffffff;
-  font-size: 10.5px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 4px;
-  letter-spacing: 0.5px;
-  z-index: 2;
+  display: none; /* Avoid overlapping with the SVG thumbnail's institute badge */
 }
 
 /* Card Body */
 .card-body-box {
-  padding: 16px 18px 18px;
+  padding: 16px 16px 16px;
   display: flex;
   flex-direction: column;
   flex: 1;
-  justify-content: space-between;
   gap: 10px;
 }
 
@@ -895,6 +903,7 @@ body.dark-theme .thumb-rating-badge {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  min-height: 42px;
   transition: color 0.15s;
 }
 .card-course-title:hover {
@@ -903,56 +912,96 @@ body.dark-theme .thumb-rating-badge {
 
 .card-meta-row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12.5px;
-  color: var(--text-muted);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  width: 100%;
 }
 .card-author-text {
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.3;
+  width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 65%;
 }
 .card-duration-text {
   font-weight: 600;
   color: var(--primary);
-  font-size: 11.5px;
+  font-size: 11px;
+  line-height: 1.25;
   background-color: var(--primary-subtle);
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: var(--radius-xs);
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-schedule-snippet {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  font-size: 11.5px;
   color: var(--text-muted);
-  flex-wrap: wrap;
+  line-height: 1.4;
   margin-top: 2px;
+  padding: 8px 10px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-hairline);
 }
 
 .card-footer-row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 14px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding-top: 12px;
   border-top: 1px solid var(--border-hairline);
-  margin-top: 4px;
-}
-
-.card-actions-wrap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  margin-top: auto;
 }
 
 .card-price-wrap {
   display: flex;
-  flex-direction: column;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+}
+.card-price-num {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.card-gst-tag {
+  font-size: 11px;
+  color: var(--secondary-emerald);
+  font-weight: 600;
+}
+
+.card-actions-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+}
+.card-actions-wrap .btn,
+.card-actions-wrap .btn-lms-compare {
+  width: 100%;
+  height: 38px;
+  padding: 0 6px;
+  font-size: 12.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
 }
 .card-price-num {
   font-size: 18px;
@@ -2521,10 +2570,11 @@ body.dark-theme .wizard-choice-box.selected {
     gap: 6px;
   }
 
-  /* Institute & Batches Grid */
+  /* Institute & Batches Grid - Horizontal Swipe Carousel on Mobile */
   .institute-group-card {
     padding: 18px 14px;
-    border-radius: 14px;
+    border-radius: 16px;
+    overflow: hidden;
   }
   .institute-header-banner {
     flex-direction: column;
@@ -2535,14 +2585,38 @@ body.dark-theme .wizard-choice-box.selected {
   }
   .institute-profile {
     gap: 10px;
+    width: 100%;
   }
   .institute-batches-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 14px;
+    padding: 4px 4px 16px 4px;
+    margin: 0 -4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-subtle) transparent;
+  }
+  .institute-batches-grid::-webkit-scrollbar {
+    height: 4px;
+  }
+  .institute-batches-grid::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .institute-batches-grid::-webkit-scrollbar-thumb {
+    background: var(--border-subtle);
+    border-radius: 4px;
   }
 
-  /* LMS Course Card on Mobile */
+  /* LMS Course Card on Mobile Horizontal Swipe Carousel */
   .course-lms-card {
+    flex: 0 0 84% !important;
+    max-width: 320px !important;
+    min-width: 260px !important;
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
     border-radius: 14px;
   }
   .card-thumb-box {
@@ -2803,6 +2877,11 @@ body.dark-theme .wizard-choice-box.selected {
 @media (max-width: 480px) {
   .site-container {
     padding: 0 12px;
+  }
+  .course-lms-card {
+    flex: 0 0 86% !important;
+    max-width: 295px !important;
+    min-width: 245px !important;
   }
   .brand-title {
     font-size: 19px;

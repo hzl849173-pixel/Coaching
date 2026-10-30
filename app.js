@@ -435,9 +435,17 @@ document.addEventListener("DOMContentLoaded", () => {
                   <p>📍 ${escapeHTML(inst.location)} • Estd. ${escapeHTML(inst.established)}</p>
                 </div>
               </div>
-              <div class="institute-reputation-tag">
-                <span>🏅</span>
-                <span>${escapeHTML(inst.reputationTag)}</span>
+              <div class="institute-header-right">
+                <div class="institute-reputation-tag">
+                  <span>🏅</span>
+                  <span>${escapeHTML(inst.reputationTag)}</span>
+                </div>
+                ${instBatches.length > 1 ? `
+                  <span class="mobile-swipe-indicator">
+                    <span>↔️</span>
+                    <span>Swipe ${instBatches.length} Courses</span>
+                  </span>
+                ` : ""}
               </div>
             </div>
 
@@ -488,9 +496,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="thumb-rating-badge">
             <span class="star-icon">⭐</span>
             <span>${batch.rating.toFixed(1)}</span>
-          </div>
-          <div class="thumb-exam-pill">
-            <span>${escapeHTML(batch.targetExam)}</span>
           </div>
         </div>
 
