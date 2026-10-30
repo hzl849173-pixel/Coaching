@@ -450,7 +450,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    totalBatchesBadge.textContent = `${totalMatchingBatches} Batches`;
+    totalBatchesBadge.textContent = `${totalMatchingBatches} Online Batches`;
 
     if (totalMatchingBatches === 0) {
       institutesGroupedStream.innerHTML = `
