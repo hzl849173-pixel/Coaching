@@ -91,6 +91,12 @@ body.dark-theme {
   padding: 0;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-page);
@@ -418,11 +424,11 @@ body.dark-theme .dropdown-opt-btn.active {
   color: var(--primary);
 }
 
-/* Header Right Spacious Nav & Utility */
-.header-right-group {
+/* Header Utility Actions (Theme & Post) */
+.header-actions-group {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex-shrink: 0;
 }
 
@@ -1329,6 +1335,24 @@ body.dark-theme .con-box ul {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   margin-bottom: 60px;
+}
+
+.table-scroll-hint {
+  display: none;
+}
+@media (max-width: 860px) {
+  .table-scroll-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+    background-color: var(--primary-subtle);
+    border-bottom: 1px solid var(--border-hairline);
+    padding: 8px 14px;
+    text-align: center;
+  }
 }
 
 .comparison-table {
@@ -2347,23 +2371,474 @@ body.dark-theme .wizard-choice-box.selected {
   display: block !important;
 }
 
-/* Responsive */
-@media (max-width: 990px) {
-  .exam-selector-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .institute-batches-grid {
-    grid-template-columns: 1fr;
+/* ==========================================================================
+   MOBILE & TABLET RESPONSIVE SYSTEM (100% Bug-Free Touch Experience)
+   ========================================================================== */
+
+/* Prevent iOS Safari automatic form zoom jump */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="search"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px !important;
   }
 }
 
-@media (max-width: 640px) {
-  .exam-selector-cards {
-    grid-template-columns: 1fr;
+/* Medium Devices (Tablets & Small Desktops: <= 1024px) */
+@media (max-width: 1024px) {
+  .site-container {
+    padding: 0 20px;
+  }
+  .header-inner {
+    gap: 16px;
+  }
+  .header-search {
+    max-width: 300px;
+  }
+  .institute-batches-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .comparison-table .feature-col {
+    width: 170px;
+  }
+}
+
+/* Tablets & Mobile Screens (<= 860px) */
+@media (max-width: 860px) {
+  .site-container {
+    padding: 0 16px;
+  }
+
+  /* App-Style Multi-Tier Sticky Mobile Header */
+  .site-header {
+    padding: 10px 0 6px;
+  }
+  .header-inner {
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "brand actions"
+      "search search"
+      "nav nav";
+    gap: 10px 12px;
+  }
+  .brand-wrapper {
+    grid-area: brand;
+  }
+  .header-actions-group {
+    grid-area: actions;
+    justify-self: end;
+    gap: 8px;
+  }
+  .header-search {
+    grid-area: search;
+    max-width: 100%;
+    width: 100%;
+  }
+  .header-search input {
+    height: 42px;
+    padding-left: 42px;
+  }
+  .header-nav-links {
+    grid-area: nav;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 2px 0 4px;
+  }
+  .header-nav-links::-webkit-scrollbar {
+    display: none;
+  }
+  .header-nav-btn {
+    padding: 7px 14px;
+    font-size: 13px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Top Section Title & Filter Card */
+  .courses-catalog-header {
+    margin-bottom: 20px;
+  }
+  .catalog-title-line {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .catalog-main-heading {
+    font-size: 24px;
+  }
+  .modern-dropdown {
+    width: 100%;
+  }
+  .modern-dropdown-btn {
+    width: 100%;
+    justify-content: space-between;
+    padding: 8px 16px;
+  }
+  .modern-dropdown-menu {
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+
+  .catalog-filter-card {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+  .exam-segmented-bar {
+    width: 100%;
+    padding: 3px;
+  }
+  .exam-seg-btn {
+    min-width: 110px;
+    padding: 7px 12px;
+    font-size: 12.5px;
+  }
+  .subfilters-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .subfilter-group {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .subfilter-divider {
+    display: none;
+  }
+  .subfilter-chips {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* Institute & Batches Grid */
+  .institute-group-card {
+    padding: 18px 14px;
+    border-radius: 14px;
   }
   .institute-header-banner {
     flex-direction: column;
     align-items: flex-start;
+    gap: 12px;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+  }
+  .institute-profile {
     gap: 10px;
+  }
+  .institute-batches-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* LMS Course Card on Mobile */
+  .course-lms-card {
+    border-radius: 14px;
+  }
+  .card-thumb-box {
+    height: 175px;
+  }
+  .card-body-box {
+    padding: 14px;
+    gap: 10px;
+  }
+  .card-course-title {
+    font-size: 15.5px;
+  }
+  .card-footer-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .card-price-wrap {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .card-actions-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+  .card-actions-wrap .btn,
+  .card-actions-wrap .btn-lms-compare {
+    width: 100%;
+    justify-content: center;
+    height: 40px;
+  }
+
+  /* Modals on Mobile */
+  .modal-backdrop {
+    padding: 8px;
+    align-items: flex-end;
+  }
+  .modal-window {
+    max-height: 92vh;
+    border-radius: 16px 16px 0 0;
+    max-width: 100%;
+    width: 100%;
+  }
+  .modal-header {
+    padding: 14px 16px;
+  }
+  .modal-body {
+    padding: 16px 14px;
+    gap: 14px;
+  }
+  .modal-footer {
+    padding: 12px 14px;
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  .modal-footer .btn {
+    width: 100%;
+    height: 42px;
+  }
+  .spec-grid-compact {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  /* Sticky Compare Bar on Mobile */
+  .sticky-compare-bar {
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  }
+  .compare-bar-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .compare-bar-left {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .compare-chips {
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+  .compare-chip {
+    flex-shrink: 0;
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+  .compare-bar-right {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .compare-bar-right .btn {
+    flex: 1;
+    height: 38px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Comparison Matrix on Mobile */
+  .comparison-table-wrapper {
+    margin-bottom: 40px;
+  }
+  .comparison-table th,
+  .comparison-table td {
+    padding: 10px 12px;
+    min-width: 190px;
+    font-size: 12.5px;
+  }
+  .comparison-table .feature-col {
+    width: 130px;
+    min-width: 130px;
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+  .compare-head-card {
+    gap: 2px;
+  }
+  .compare-head-title {
+    font-size: 13.5px;
+  }
+
+  /* Forum Mobile Layout */
+  .reddit-hub-layout {
+    margin-bottom: 30px;
+  }
+  .forum-title-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .forum-main-heading {
+    font-size: 21px;
+  }
+  .forum-ask-btn {
+    width: 100%;
+    height: 42px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .forum-toolbar-card {
+    padding: 8px 10px;
+    gap: 10px;
+  }
+  .forum-sort-segmented .forum-tab-btn {
+    padding: 6px 10px;
+    font-size: 12.5px;
+  }
+  .flair-pill {
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+  .reddit-post-card {
+    padding: 16px 14px;
+    border-radius: 14px;
+  }
+  .post-title-link {
+    font-size: 16px;
+  }
+  .post-snippet {
+    font-size: 13.5px;
+  }
+  .post-action-bar {
+    gap: 8px;
+  }
+  .vote-pill-widget .vote-btn {
+    height: 32px;
+    padding: 0 6px;
+  }
+  .post-action-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  /* Thread Modal on Mobile */
+  .thread-reply-box {
+    padding: 12px;
+    border-radius: 10px;
+  }
+  .reply-textarea {
+    min-height: 75px;
+  }
+  .reply-footer-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .reply-author-field {
+    max-width: 100%;
+    width: 100%;
+    height: 40px;
+  }
+  .reply-submit-pill {
+    width: 100%;
+    height: 40px;
+    justify-content: center;
+  }
+
+  /* Match Wizard on Mobile */
+  .wizard-card {
+    padding: 20px 16px;
+    border-radius: 14px;
+    margin-bottom: 30px;
+  }
+  .wizard-question-title {
+    font-size: 18px;
+  }
+  .wizard-question-desc {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .wizard-options-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .wizard-choice-box {
+    padding: 14px 16px;
+  }
+  .choice-title {
+    font-size: 14px;
+  }
+  .choice-sub {
+    font-size: 12px;
+  }
+  .wizard-nav-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  .wizard-nav-buttons .btn {
+    flex: 1;
+    height: 42px;
+  }
+  .wizard-match-card {
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px 14px;
+  }
+  .wizard-match-side {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+  }
+  .wizard-match-actions {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+/* Extra Small Mobile Devices (<= 480px) */
+@media (max-width: 480px) {
+  .site-container {
+    padding: 0 12px;
+  }
+  .brand-title {
+    font-size: 19px;
+  }
+  .brand-bulb-icon {
+    font-size: 20px;
+  }
+  .catalog-main-heading {
+    font-size: 21px;
+  }
+  .catalog-count-pill {
+    font-size: 11px;
+    padding: 2px 8px;
+  }
+  .header-post-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+  .header-icon-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+  }
+  .modal-window {
+    border-radius: 14px 14px 0 0;
+  }
+  .modal-header {
+    padding: 12px 14px;
+  }
+  .modal-title {
+    font-size: 15px;
+  }
+  .modal-body {
+    padding: 14px 12px;
+  }
+  .modal-footer {
+    padding: 10px 12px;
   }
 }

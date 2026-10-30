@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=mobile2">
 </head>
 <body>
 
@@ -30,26 +30,25 @@
         <input type="text" id="globalSearchInput" placeholder="Search online courses, live batches, faculties, fees, courier books..." autocomplete="off">
       </div>
 
-      <!-- Right: Spacious Navigation Links & Actions -->
-      <div class="header-right-group">
-        <nav class="header-nav-links">
-          <button class="header-nav-btn active" data-tab="directory" title="Browse Online Courses">
-            Online Courses
-          </button>
-          <button class="header-nav-btn" data-tab="reddit" title="Student Forum">
-            Forum
-          </button>
-          <button class="header-nav-btn" data-tab="wizard" title="Match Batch">
-            Match
-          </button>
-          <button id="headerCompareBtn" class="header-nav-btn compare-nav-link" data-tab="comparison" title="View Compared Batches">
-            <span>Compare</span>
-            <span id="headerCompareCount" class="compare-count-pill">0</span>
-          </button>
-        </nav>
+      <!-- Navigation Links -->
+      <nav class="header-nav-links" id="headerNavTabs">
+        <button class="header-nav-btn active" data-tab="directory" title="Browse Online Courses">
+          Online Courses
+        </button>
+        <button class="header-nav-btn" data-tab="reddit" title="Student Forum">
+          Forum
+        </button>
+        <button class="header-nav-btn" data-tab="wizard" title="Match Batch">
+          Match
+        </button>
+        <button id="headerCompareBtn" class="header-nav-btn compare-nav-link" data-tab="comparison" title="View Compared Batches">
+          <span>Compare</span>
+          <span id="headerCompareCount" class="compare-count-pill">0</span>
+        </button>
+      </nav>
 
-        <div class="header-action-divider"></div>
-
+      <!-- Right Utility Actions -->
+      <div class="header-actions-group">
         <!-- Dark Mode Toggle -->
         <button id="themeToggleBtn" class="header-icon-btn" title="Toggle Light / Dark Mode">
           <span id="themeIcon">🌙</span>
@@ -191,6 +190,9 @@
       </div>
 
       <div id="comparisonTableWrapper" class="comparison-table-wrapper" style="display:none;">
+        <div class="table-scroll-hint">
+          <span>↔️ Swipe horizontally to view full batch comparison</span>
+        </div>
         <table class="comparison-table" id="comparisonTable">
           <!-- Populated dynamically -->
         </table>
@@ -452,8 +454,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="data.js"></script>
-  <script src="forumData.js"></script>
-  <script src="app.js"></script>
+  <script src="data.js?v=mobile2"></script>
+  <script src="forumData.js?v=mobile2"></script>
+  <script src="app.js?v=mobile2"></script>
 </body>
 </html>
