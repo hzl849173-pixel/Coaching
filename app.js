@@ -484,7 +484,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <article class="course-lms-card" data-batch-id="${batch.id}">
         <!-- Top Course Thumbnail Banner with Rating Pill -->
         <div class="card-thumb-box view-details-trigger" data-id="${batch.id}">
-          <img src="${batch.thumbnail}" alt="${escapeHTML(batch.name)}" class="card-thumb-img" loading="lazy" />
+          <img src="${batch.image || batch.thumbnail}" alt="${escapeHTML(batch.name)}" class="card-thumb-img" loading="lazy" />
           <div class="thumb-rating-badge">
             <span class="star-icon">⭐</span>
             <span>${batch.rating.toFixed(1)}</span>
@@ -500,23 +500,32 @@ document.addEventListener("DOMContentLoaded", () => {
             ${escapeHTML(batch.name)}
           </h4>
 
-          <!-- Author / Institute & Duration Row -->
+          <!-- Author / Institute & Mode Row -->
           <div class="card-meta-row">
             <span class="card-author-text">${escapeHTML(batch.institute)}</span>
-            <span class="card-duration-text">${batch.durationMonths} Months</span>
+            <span class="card-duration-text">${escapeHTML(batch.mode || batch.category)}</span>
+          </div>
+
+          <!-- Schedule & Language Snippet -->
+          <div class="card-schedule-snippet">
+            <span>📅 ${escapeHTML(batch.schedule ? batch.schedule.split('•')[0].trim() : 'Regular Schedule')}</span>
+            <span>📝 ${batch.testsPerMonth || 8} Tests/Mo</span>
           </div>
 
           <!-- Bottom Price & Action Row -->
           <div class="card-footer-row">
             <div class="card-price-wrap">
               <span class="card-price-num">₹${batch.price.toLocaleString('en-IN')}</span>
-              <span class="card-gst-tag">GST Included</span>
+              <span class="card-gst-tag">${escapeHTML(batch.gstNote || 'GST Included')}</span>
             </div>
 
             <div class="card-actions-wrap">
-              <button class="btn-lms-compare ${isCompared ? 'in-compare' : ''}" data-id="${batch.id}">
+              <button class="btn btn-outline btn-sm view-details-trigger" data-id="${batch.id}" type="button" title="View full batch details">
+                Details
+              </button>
+              <button class="btn-lms-compare ${isCompared ? 'in-compare' : ''}" data-id="${batch.id}" type="button">
                 <span class="btn-icon">${isCompared ? '✓' : '🛍️'}</span>
-                <span>${isCompared ? 'In Compare' : 'Add to Compare'}</span>
+                <span>${isCompared ? 'In Compare' : 'Compare'}</span>
               </button>
             </div>
           </div>
@@ -625,6 +634,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ${selectedBatches.map(b => `
             <th>
               <div class="compare-head-card">
+                ${b.image ? `<img src="${b.image}" alt="${escapeHTML(b.name)}" style="width:100%; height:90px; object-fit:cover; border-radius:6px; margin-bottom:8px;" />` : ""}
                 <span class="badge badge-category">${escapeHTML(b.institute)}</span>
                 <div class="compare-head-title">${escapeHTML(b.name)}</div>
                 <div class="price-main" style="font-size:20px; margin-top:4px;">₹${b.price.toLocaleString('en-IN')}</div>
@@ -637,20 +647,17 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     const rows = [
-      { label: "Target Exam & Category", fn: b => `<strong>${b.targetExam}</strong><br><span style="color:var(--text-muted)">${b.category}</span>` },
-      { label: "Instruction Medium", fn: b => `<span class="badge badge-language">${b.language}</span>` },
-      { label: "Duration & Daily Hours", fn: b => `<strong>${b.durationMonths} Months</strong><br>${b.schedule}` },
-      { label: "Lectures Delivery", fn: b => b.lecturesFormat },
-      { label: "Study Material & Books", fn: b => `✓ ${b.studyMaterial}` },
-      { label: "Doubt Clearing Mechanism", fn: b => `✓ ${b.doubtClearing}` },
-      { label: "Test Series & CBT Engine", fn: b => b.testSeries },
-      { label: "App & Web Compatibility", fn: b => b.appPlatform },
-      { label: "Mentorship & Parents Connect", fn: b => b.mentorSupport },
-      { label: "Scholarships & Concessions", fn: b => b.scholarshipDetails },
-      { label: "Refund / Exit Policy", fn: b => `ℹ ${b.refundPolicy}` },
+      { label: "Target Exam & Category", fn: b => `<strong>${escapeHTML(b.targetExam)}</strong><br><span style="color:var(--text-muted)">${escapeHTML(b.category)}</span>` },
+      { label: "Instruction Medium & Mode", fn: b => `<span class="badge badge-language">${escapeHTML(b.language)}</span><br><span style="font-size:12px; color:var(--text-secondary);">${escapeHTML(b.mode || 'Online Live')}</span>` },
+      { label: "Class Schedule", fn: b => `📅 ${escapeHTML(b.schedule || 'Flexible')}` },
+      { label: "Faculty & Teachers", fn: b => b.teachers && b.teachers.length ? b.teachers.map(t => escapeHTML(t)).join('<br>') : 'Expert Senior Faculty' },
+      { label: "Tests & Model Exams", fn: b => `📝 <strong>${b.testsPerMonth || 8} Full Tests / Month</strong>` },
+      { label: "Study Material & Books", fn: b => `📦 ${escapeHTML(b.studyMaterial || 'Standard books provided')}` },
+      { label: "Batch Cohort Size", fn: b => `👥 ${escapeHTML(b.batchSize || 'Standard batch')}` },
+      { label: "Installments & Payment", fn: b => `💳 ${escapeHTML(b.installments || 'Full payment')}` },
       { label: "Student Rating & Reviews", fn: b => `<strong>★ ${b.rating} / 5.0</strong> (${b.reviewsCount} reviews)` },
-      { label: "Key Strengths", fn: b => `<ul style="padding-left:14px; font-size:12.5px; color:var(--text-secondary);">${b.highlights.map(h => `<li>${escapeHTML(h)}</li>`).join("")}</ul>` },
-      { label: "Points to Keep in Mind", fn: b => `<ul style="padding-left:14px; font-size:12.5px; color:#b91c1c;">${b.cons.map(c => `<li>${escapeHTML(c)}</li>`).join("")}</ul>` }
+      { label: "Key Strengths", fn: b => `<ul style="padding-left:14px; font-size:12.5px; color:var(--text-secondary);">${(b.highlights || []).map(h => `<li>${escapeHTML(h)}</li>`).join("")}</ul>` },
+      { label: "Refund / Exit Policy", fn: b => `ℹ ${escapeHTML(b.refundPolicy || 'Institute terms apply')}` }
     ];
 
     const tbody = `
@@ -688,63 +695,62 @@ document.addEventListener("DOMContentLoaded", () => {
     modalAddToCompareBtn.textContent = isCompared ? "✓ In Comparison (Click to Remove)" : "+ Add to Comparison";
 
     modalBatchBody.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-light); padding-bottom:14px;">
-        <div>
+      ${batch.image ? `
+        <div style="width:100%; height:190px; border-radius:8px; overflow:hidden; margin-bottom:16px;">
+          <img src="${batch.image}" alt="${escapeHTML(batch.name)}" style="width:100%; height:100%; object-fit:cover;" />
+        </div>
+      ` : ""}
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-hairline); padding-bottom:14px; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
           <span class="badge badge-exam">${escapeHTML(batch.targetExam)}</span>
-          <span class="badge badge-category" style="margin-left:6px;">${escapeHTML(batch.category)}</span>
-          <span class="badge badge-language" style="margin-left:6px;">${escapeHTML(batch.language)}</span>
+          <span class="badge badge-category">${escapeHTML(batch.category)}</span>
+          <span class="badge badge-language">${escapeHTML(batch.language)}</span>
+          ${batch.badge ? `<span class="badge badge-highlight">${escapeHTML(batch.badge)}</span>` : ""}
         </div>
         <div style="text-align:right;">
           <div style="font-size:24px; font-weight:800; color:var(--text-primary);">₹${batch.price.toLocaleString('en-IN')}</div>
-          <span class="price-gst-badge">GST Inclusive • Official Price</span>
+          <span class="price-gst-badge">${escapeHTML(batch.gstNote || 'GST Inclusive')}</span>
         </div>
       </div>
 
-      <div class="spec-grid-compact" style="grid-template-columns: repeat(2, 1fr); margin: 0;">
-        <div class="spec-cell"><span class="spec-cell-label">Duration</span><span class="spec-cell-val">${batch.durationMonths} Months</span></div>
-        <div class="spec-cell"><span class="spec-cell-label">Class Schedule</span><span class="spec-cell-val">${escapeHTML(batch.schedule)}</span></div>
-        <div class="spec-cell"><span class="spec-cell-label">Medium</span><span class="spec-cell-val">${escapeHTML(batch.language)}</span></div>
-        <div class="spec-cell"><span class="spec-cell-label">Rating</span><span class="spec-cell-val">★ ${batch.rating} (${batch.reviewsCount} reviews)</span></div>
+      <div class="spec-grid-compact" style="grid-template-columns: repeat(2, 1fr); margin: 12px 0 16px 0;">
+        <div class="spec-cell"><span class="spec-cell-label">Class Schedule</span><span class="spec-cell-val">${escapeHTML(batch.schedule || 'Flexible Schedule')}</span></div>
+        <div class="spec-cell"><span class="spec-cell-label">Mode of Delivery</span><span class="spec-cell-val">${escapeHTML(batch.mode || 'Online Live')}</span></div>
+        <div class="spec-cell"><span class="spec-cell-label">Batch Size</span><span class="spec-cell-val">${escapeHTML(batch.batchSize || 'Standard cohort')}</span></div>
+        <div class="spec-cell"><span class="spec-cell-label">Student Rating</span><span class="spec-cell-val">★ ${batch.rating} (${batch.reviewsCount} verified reviews)</span></div>
+        <div class="spec-cell"><span class="spec-cell-label">Model Exams & CBT</span><span class="spec-cell-val">📝 ${batch.testsPerMonth || 8} Full Tests / Month</span></div>
+        <div class="spec-cell"><span class="spec-cell-label">Installment Plan</span><span class="spec-cell-val">${escapeHTML(batch.installments || 'Available on request')}</span></div>
       </div>
 
-      <div class="form-field">
-        <label class="form-label">Study Material & Physical Books:</label>
-        <div style="font-size:13.5px; color:var(--text-secondary); background:var(--bg-page); padding:12px; border-radius:6px; border:1px solid var(--border-light);">
-          ${escapeHTML(batch.studyMaterial)}
+      ${batch.teachers && batch.teachers.length > 0 ? `
+        <div class="form-field">
+          <label class="form-label">Leading Faculty & Educators:</label>
+          <div style="font-size:13.5px; color:var(--text-secondary); background:var(--bg-subtle); padding:12px 14px; border-radius:6px; border:1px solid var(--border-hairline);">
+            👨‍🏫 ${batch.teachers.map(t => escapeHTML(t)).join(' • ')}
+          </div>
         </div>
-      </div>
-
-      <div class="form-field">
-        <label class="form-label">Doubt Resolution Protocol:</label>
-        <div style="font-size:13.5px; color:var(--text-secondary); background:var(--bg-page); padding:12px; border-radius:6px; border:1px solid var(--border-light);">
-          ${escapeHTML(batch.doubtClearing)}
-        </div>
-      </div>
+      ` : ""}
 
       <div class="form-field">
-        <label class="form-label">Test Series & CBT Exam Pattern:</label>
-        <div style="font-size:13.5px; color:var(--text-secondary); background:var(--bg-page); padding:12px; border-radius:6px; border:1px solid var(--border-light);">
-          ${escapeHTML(batch.testSeries)}
+        <label class="form-label">Study Material & Physical Book Delivery:</label>
+        <div style="font-size:13.5px; color:var(--text-secondary); background:var(--bg-subtle); padding:12px 14px; border-radius:6px; border:1px solid var(--border-hairline);">
+          📦 ${escapeHTML(batch.studyMaterial || 'Comprehensive printed modules and online question bank included')}
         </div>
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-        <div class="strength-box">
-          <strong>Key Strengths:</strong>
-          <ul>
-            ${batch.highlights.map(h => `<li>${escapeHTML(h)}</li>`).join("")}
-          </ul>
+      ${batch.highlights && batch.highlights.length > 0 ? `
+        <div class="form-field">
+          <label class="form-label">Key Strengths & Features:</label>
+          <div class="strength-box">
+            <ul>
+              ${batch.highlights.map(h => `<li>${escapeHTML(h)}</li>`).join("")}
+            </ul>
+          </div>
         </div>
-        <div class="con-box">
-          <strong>Points to Keep in Mind:</strong>
-          <ul>
-            ${batch.cons.map(c => `<li>${escapeHTML(c)}</li>`).join("")}
-          </ul>
-        </div>
-      </div>
+      ` : ""}
 
-      <div style="font-size:12.5px; color:var(--text-muted); border-top:1px solid var(--border-light); padding-top:12px;">
-        <strong>Refund Policy:</strong> ${escapeHTML(batch.refundPolicy)}
+      <div style="font-size:12.5px; color:var(--text-muted); border-top:1px solid var(--border-hairline); padding-top:12px; margin-top:8px;">
+        <strong>Exit & Refund Policy:</strong> ${escapeHTML(batch.refundPolicy || 'Standard institute policy applies')}
       </div>
     `;
 
@@ -795,46 +801,63 @@ document.addEventListener("DOMContentLoaded", () => {
     forumPostsStream.innerHTML = list.map(post => {
       const upvotedClass = post.userVote === 1 ? "upvoted" : "";
       const downvotedClass = post.userVote === -1 ? "downvoted" : "";
+      const authorInitial = (post.author || "A")[0].toUpperCase();
 
       return `
         <article class="reddit-post-card" data-post-id="${post.id}">
-          <div class="vote-column">
-            <button class="vote-btn ${upvotedClass} vote-up-btn" data-post-id="${post.id}" title="Upvote">▲</button>
-            <span class="vote-score ${upvotedClass} ${downvotedClass}">${post.upvotes}</span>
-            <button class="vote-btn ${downvotedClass} vote-down-btn" data-post-id="${post.id}" title="Downvote">▼</button>
-          </div>
-
-          <div class="post-content-column">
+          <div class="post-card-inner">
+            <!-- Author & Metadata Line (Top) -->
             <div class="post-meta-row">
-              <span class="badge badge-category">${escapeHTML(post.flair)}</span>
-              <span class="badge badge-exam">${escapeHTML(post.examTag)}</span>
-              <span>•</span>
-              <span class="post-author">u/${escapeHTML(post.author)}</span>
-              ${post.authorBadge ? `<span class="verified-tag">${escapeHTML(post.authorBadge)}</span>` : ""}
-              <span>•</span>
-              <span>${escapeHTML(post.timeAgo || "Recently")}</span>
+              <div class="author-meta-left">
+                <span class="author-avatar-chip" aria-hidden="true">${authorInitial}</span>
+                <span class="post-author">u/${escapeHTML(post.author)}</span>
+                ${post.authorBadge ? `<span class="verified-tag">${escapeHTML(post.authorBadge)}</span>` : ""}
+                <span class="meta-dot">·</span>
+                <span class="meta-time">${escapeHTML(post.timeAgo || "Recently")}</span>
+              </div>
+              <div class="post-meta-tags">
+                <span class="badge badge-exam">${escapeHTML(post.examTag)}</span>
+                <span class="badge badge-category">${escapeHTML(post.flair)}</span>
+              </div>
             </div>
 
+            <!-- Highly Legible, Large Post Title -->
             <h3 class="post-title-link open-thread-trigger" data-post-id="${post.id}">
               ${escapeHTML(post.title)}
             </h3>
 
+            <!-- Clear, Easy-to-read Content Snippet -->
             <p class="post-snippet">
               ${escapeHTML(post.content)}
             </p>
 
-            ${post.content && post.content.length > 180 ? `
+            ${post.content && post.content.length > 200 ? `
               <button class="post-expand-toggle-btn" data-post-id="${post.id}" type="button">
-                <span>Read more ▾</span>
+                <span>Read full post ▾</span>
               </button>
             ` : ""}
 
+            <!-- Clean Bottom Action Bar with Horizontal Vote Pill -->
             <div class="post-action-bar">
+              <div class="vote-pill-widget">
+                <button class="vote-btn ${upvotedClass} vote-up-btn" data-post-id="${post.id}" title="Upvote" aria-label="Upvote">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                  <span class="vote-label-text">Helpful</span>
+                </button>
+                <span class="vote-score ${upvotedClass} ${downvotedClass}">${post.upvotes}</span>
+                <button class="vote-btn ${downvotedClass} vote-down-btn" data-post-id="${post.id}" title="Downvote" aria-label="Downvote">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+              </div>
+
               <button class="post-action-btn open-thread-trigger" data-post-id="${post.id}">
-                💬 ${post.commentsCount || (post.comments ? post.comments.length : 0)} Comments
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>${post.commentsCount || (post.comments ? post.comments.length : 0)} Comments</span>
               </button>
+
               <button class="post-action-btn share-post-btn" data-title="${escapeHTML(post.title)}">
-                ↗ Share
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                <span>Share</span>
               </button>
             </div>
           </div>
@@ -931,36 +954,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderThreadModalContent(post) {
     const comments = post.comments || [];
+    const authorInitial = (post.author || "A")[0].toUpperCase();
 
     modalThreadBody.innerHTML = `
-      <div class="post-meta-row" style="margin-bottom:10px;">
-        <span class="badge badge-category">${escapeHTML(post.flair)}</span>
-        <span class="badge badge-exam">${escapeHTML(post.examTag)}</span>
-        <span>• Posted by u/<strong>${escapeHTML(post.author)}</strong></span>
-        ${post.authorBadge ? `<span class="verified-tag">${escapeHTML(post.authorBadge)}</span>` : ""}
-        <span>• ${escapeHTML(post.timeAgo || "Recently")}</span>
+      <div class="post-meta-row" style="margin-bottom:16px;">
+        <div class="author-meta-left">
+          <span class="author-avatar-chip" aria-hidden="true">${authorInitial}</span>
+          <span class="post-author">u/${escapeHTML(post.author)}</span>
+          ${post.authorBadge ? `<span class="verified-tag">${escapeHTML(post.authorBadge)}</span>` : ""}
+          <span class="meta-dot">·</span>
+          <span class="meta-time">${escapeHTML(post.timeAgo || "Recently")}</span>
+        </div>
+        <div class="post-meta-tags">
+          <span class="badge badge-exam">${escapeHTML(post.examTag)}</span>
+          <span class="badge badge-category">${escapeHTML(post.flair)}</span>
+        </div>
       </div>
 
       <div class="thread-full-content">
         ${escapeHTML(post.content)}
       </div>
 
-      <div style="border-top:1px solid var(--border-light); margin-top:24px; padding-top:20px;">
-        <h4 style="font-size:15px; font-weight:700; margin-bottom:14px;">
+      <div style="border-top:1px solid var(--border-hairline); margin-top:28px; padding-top:22px;">
+        <h4 style="font-size:18px; font-weight:750; letter-spacing:-0.01em; margin-bottom:18px; color:var(--text-primary);">
           Discussion (${comments.length} Comments)
         </h4>
 
-        <!-- Reply Input Box -->
-        <div style="background:var(--bg-page); border:1.5px solid var(--border-medium); border-radius:6px; padding:14px; margin-bottom:24px;">
-          <textarea id="replyTextInput" class="form-textarea" style="min-height:75px; margin-bottom:10px;" placeholder="Add to the discussion... Share your batch experience or advice..."></textarea>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <input type="text" id="replyAuthorInput" class="form-input" style="max-width:260px; font-size:12.5px;" placeholder="Your Name / Status (e.g., Arjun, Repeater 2025)">
-            <button id="submitReplyBtn" class="btn btn-primary btn-sm">Post Comment</button>
+        <!-- Modern Clean Reply Card -->
+        <div class="thread-reply-box">
+          <textarea id="replyTextInput" class="form-textarea reply-textarea" placeholder="Add to the discussion... Share your batch experience, test feedback or advice..."></textarea>
+          <div class="reply-footer-row">
+            <input type="text" id="replyAuthorInput" class="form-input reply-author-field" placeholder="Your Name / Status (e.g., Arjun, Repeater 2025)">
+            <button id="submitReplyBtn" class="btn btn-primary reply-submit-pill">Post Comment</button>
           </div>
         </div>
 
         <div class="comment-list">
-          ${comments.length === 0 ? `<p style="font-size:13.5px; color:var(--text-muted)">No comments yet. Share your experience!</p>` : ""}
+          ${comments.length === 0 ? `<p style="font-size:14.5px; color:var(--text-muted); padding:12px 0;">No comments yet. Share your experience!</p>` : ""}
           ${comments.map(c => `
             <div class="comment-item" data-comment-id="${c.id}">
               <div class="comment-threadline" title="Click to collapse / expand thread"></div>

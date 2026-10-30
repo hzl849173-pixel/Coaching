@@ -198,62 +198,50 @@
     </div>
 
     <!-- ====================================================================
-         VIEW 3: ASPIRANT FORUM (REDDIT STYLE)
+         VIEW 3: ASPIRANT FORUM (Modern, Minimal & Premium Discussion Hub)
          ==================================================================== -->
     <div id="viewReddit" class="reddit-hub-layout" style="display:none;">
       <!-- Forum Stream Column -->
       <section class="forum-stream-column">
-        <div class="section-heading-box" style="text-align:left; margin-bottom: 16px;">
-          <h2 class="section-title">Aspirant Community Hub</h2>
-          <p class="section-desc">Honest student experiences, Brilliant vs Xylem comparisons, repeater life, and hidden fee reviews.</p>
-        </div>
-
-        <!-- Filter bar -->
-        <div class="forum-header-bar">
-          <div class="forum-sort-tabs">
-            <button class="forum-tab-btn active" data-forum-sort="hot">🔥 Hot</button>
-            <button class="forum-tab-btn" data-forum-sort="top">⭐ Top</button>
-            <button class="forum-tab-btn" data-forum-sort="new">🕒 Newest</button>
+        <!-- Modern Clean Forum Header -->
+        <div class="forum-top-header">
+          <div class="forum-title-row">
+            <div class="forum-title-left">
+              <div class="forum-heading-wrap">
+                <h2 class="forum-main-heading">Aspirant Discussions</h2>
+                <span class="forum-pulse-badge">● Community Live</span>
+              </div>
+              <p class="forum-subheading">Unfiltered student reviews, Brilliant vs Xylem comparisons, repeater life, and hidden fee reviews</p>
+            </div>
+            <button id="forumNewPostBtn" class="forum-ask-btn" type="button">
+              <span>+ Ask Question</span>
+            </button>
           </div>
-          <button id="forumNewPostBtn" class="btn btn-primary btn-sm">+ Ask Question</button>
-        </div>
 
-        <!-- Flairs -->
-        <div class="forum-flair-filter" id="flairFilterStrip">
-          <button class="flair-pill active" data-flair="all">All Topics</button>
-          <button class="flair-pill" data-flair="Brilliant vs Xylem">Brilliant vs Xylem</button>
-          <button class="flair-pill" data-flair="Physics Wallah">Physics Wallah</button>
-          <button class="flair-pill" data-flair="Fee & Value">Fee & Value</button>
-          <button class="flair-pill" data-flair="Repeater Advice">Repeater Advice</button>
-          <button class="flair-pill" data-flair="Institute Review">Institute Review</button>
+          <!-- Unified Toolbar: Sort Tabs + Topic Filter Chips -->
+          <div class="forum-toolbar-card">
+            <div class="forum-sort-segmented">
+              <button class="forum-tab-btn active" data-forum-sort="hot">🔥 Hot</button>
+              <button class="forum-tab-btn" data-forum-sort="top">⭐ Top</button>
+              <button class="forum-tab-btn" data-forum-sort="new">🕒 Newest</button>
+            </div>
+
+            <div class="forum-toolbar-divider"></div>
+
+            <div class="forum-flair-filter" id="flairFilterStrip">
+              <button class="flair-pill active" data-flair="all">All Topics</button>
+              <button class="flair-pill" data-flair="Brilliant vs Xylem">Brilliant vs Xylem</button>
+              <button class="flair-pill" data-flair="Physics Wallah">Physics Wallah</button>
+              <button class="flair-pill" data-flair="Fee & Value">Fee &amp; Value</button>
+              <button class="flair-pill" data-flair="Repeater Advice">Repeater Advice</button>
+              <button class="flair-pill" data-flair="Institute Review">Institute Review</button>
+            </div>
+          </div>
         </div>
 
         <!-- Posts stream -->
         <div class="forum-posts-stream" id="forumPostsStream"></div>
       </section>
-
-      <!-- Forum Sidebar -->
-      <aside class="forum-sidebar">
-        <div class="forum-box">
-          <h4 class="forum-box-title">About path2learn Forum</h4>
-          <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px;">
-            A student-first space helping Kerala & National entrance aspirants choose the right coaching batch without marketing hype.
-          </p>
-          <div style="font-size: 12.5px; color: var(--text-muted); border-top: 1px solid var(--border-hairline); padding-top: 10px;">
-            <p>👥 <strong>38,000+</strong> Kerala Aspirants</p>
-            <p style="margin-top: 4px;">🎓 <strong>1,200+</strong> Verified Medical & Engineering Students</p>
-          </div>
-        </div>
-
-        <div class="forum-box">
-          <h4 class="forum-box-title">Posting Rules</h4>
-          <ol class="rules-list">
-            <li>Zero tolerance for coaching PR spam or sales representatives.</li>
-            <li>State your context (Repeater, Plus Two, or Parent).</li>
-            <li>When stating fees, mention whether GST and printed books are included.</li>
-          </ol>
-        </div>
-      </aside>
     </div>
 
     <!-- ====================================================================
