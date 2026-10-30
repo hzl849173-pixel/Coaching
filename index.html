@@ -4,60 +4,51 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>path2learn - Compare Online Coaching Batches & Student Community</title>
-  <meta name="description" content="path2learn helps Kerala & National JEE/NEET aspirants compare online batches from Brilliant Pala, Xylem, Physics Wallah, Allen Digital, and Zephyr.">
+  <meta name="description" content="path2learn helps Kerala & National JEE/NEET aspirants compare online batches from Brilliant Pala, Xylem, Eduport, Prof. P.C. Thomas, Physics Wallah, Allen Digital, Aakash, Zephyr, PCMB, and Alpha Academy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Minimalist Clean Header (Matching LMS UI) -->
+  <!-- Minimalist Clean Header (Modern, Spacious & Uncluttered) -->
   <header class="site-header">
     <div class="site-container header-inner">
-      <!-- Left: Logo & Categories Dropdown -->
-      <div class="header-left-group">
-        <a href="#" class="brand-wrapper" id="brandHomeLink">
-          <div class="brand-logo-bulb" aria-hidden="true">💡</div>
-          <div class="brand-text">
-            <h1>path2learn</h1>
-          </div>
-        </a>
+      <!-- Left: Clean Brand Logo with Glow -->
+      <a href="#" class="brand-wrapper" id="brandHomeLink" title="path2learn Home">
+        <span class="brand-bulb-icon" aria-hidden="true">💡</span>
+        <span class="brand-title">path<span class="brand-accent">2learn</span></span>
+      </a>
 
-        <!-- Category Exam Dropdown Selector -->
-        <div class="header-category-select-wrap">
-          <select id="headerExamDropdown" class="header-category-select" title="Select Exam Category">
-            <option value="ALL">All Categories ⌵</option>
-            <option value="NEET" selected>🩺 NEET Medical</option>
-            <option value="JEE">⚙️ JEE Main & Adv</option>
-            <option value="KEAM">🏛️ KEAM Kerala</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Center: Clean Minimal Search Bar -->
+      <!-- Center: Clean Spacious Search Bar -->
       <div class="header-search">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="globalSearchInput" placeholder="Search courses, institutes, teachers, fees...">
+        <svg class="search-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="globalSearchInput" placeholder="Search courses, institutes, teachers, fees..." autocomplete="off">
       </div>
 
-      <!-- Right: Clean Minimal Actions matching LMS screenshot -->
-      <div class="header-actions">
-        <!-- Navigation Links -->
+      <!-- Right: Spacious Navigation Links & Actions -->
+      <div class="header-right-group">
         <nav class="header-nav-links">
           <button class="header-nav-btn active" data-tab="directory" title="Browse Courses">
-            <span>Courses</span>
+            Courses
           </button>
           <button class="header-nav-btn" data-tab="reddit" title="Student Forum">
-            <span>Forum</span>
+            Forum
           </button>
           <button class="header-nav-btn" data-tab="wizard" title="Match Batch">
-            <span>Match</span>
+            Match
+          </button>
+          <button id="headerCompareBtn" class="header-nav-btn compare-nav-link" data-tab="comparison" title="View Compared Batches">
+            <span>Compare</span>
+            <span id="headerCompareCount" class="compare-count-pill">0</span>
           </button>
         </nav>
 
-        <!-- Compare Cart Button -->
-        <button id="headerCompareBtn" class="header-icon-btn compare-badge-btn" title="View Compared Batches">
-          <span class="btn-icon">🛍️</span>
-          <span id="headerCompareCount" class="compare-count-pill">0</span>
-        </button>
+        <div class="header-action-divider"></div>
 
         <!-- Dark Mode Toggle -->
         <button id="themeToggleBtn" class="header-icon-btn" title="Toggle Light / Dark Mode">
@@ -65,8 +56,8 @@
         </button>
 
         <!-- Ask / Post Query Button -->
-        <button id="openPostModalBtn" class="btn btn-primary btn-sm">
-          <span>+ Post</span>
+        <button id="openPostModalBtn" class="header-post-btn">
+          + Post
         </button>
       </div>
     </div>
@@ -80,19 +71,46 @@
          ==================================================================== -->
     <div id="viewDirectory" class="directory-view-wrapper">
       
-      <!-- Clean Minimal Top Section Title & Filter Bar -->
+      <!-- Clean Minimal Top Section Title & Two-Tier Filter Bar -->
       <div class="courses-catalog-header">
         <div class="catalog-title-line">
           <div class="catalog-title-left">
-            <h2 class="catalog-main-heading">Courses</h2>
-            <span class="catalog-count-tag" id="totalBatchesBadge">24 Batches</span>
+            <div class="catalog-heading-wrap">
+              <h2 class="catalog-main-heading">Courses</h2>
+              <span class="catalog-count-pill" id="totalBatchesBadge">44 Batches</span>
+            </div>
+            <p class="catalog-subheading">Compare verified online batches across Kerala &amp; National coaching institutes</p>
           </div>
 
-          <!-- Sort dropdown on right -->
-          <div class="catalog-sort-box">
-            <label for="sortDropdown">Sort by:</label>
-            <select id="sortDropdown">
-              <option value="featured">Featured (Institute Priority)</option>
+          <!-- Modern Custom Sort Dropdown Component (Single-Line Clean Items) -->
+          <div class="modern-dropdown" id="sortDropdownWrap">
+            <button class="modern-dropdown-btn" id="sortDropdownBtn" type="button" aria-expanded="false" title="Sort Courses">
+              <span class="dropdown-icon">⇅</span>
+              <span class="dropdown-prefix">Sort:</span>
+              <span class="dropdown-text" id="sortDropdownText">Featured</span>
+              <span class="dropdown-arrow">▾</span>
+            </button>
+            <div class="modern-dropdown-menu menu-right" id="sortDropdownMenu">
+              <button class="dropdown-opt-btn active" data-sort="featured" type="button">
+                <span>Featured</span>
+                <span class="opt-check">✓</span>
+              </button>
+              <button class="dropdown-opt-btn" data-sort="price-asc" type="button">
+                <span>Price: Low to High</span>
+                <span class="opt-check">✓</span>
+              </button>
+              <button class="dropdown-opt-btn" data-sort="price-desc" type="button">
+                <span>Price: High to Low</span>
+                <span class="opt-check">✓</span>
+              </button>
+              <button class="dropdown-opt-btn" data-sort="rating-desc" type="button">
+                <span>Highest Rated</span>
+                <span class="opt-check">✓</span>
+              </button>
+            </div>
+            <!-- Hidden select for compatibility -->
+            <select id="sortDropdown" style="display:none;">
+              <option value="featured" selected>Featured</option>
               <option value="price-asc">Price: Low to High</option>
               <option value="price-desc">Price: High to Low</option>
               <option value="rating-desc">Highest Rated</option>
@@ -100,33 +118,51 @@
           </div>
         </div>
 
-        <!-- Sleek Minimal Category / Exam Filter Pills (Like LMS subnav) -->
-        <div class="catalog-filters-bar">
-          <!-- Exam Pills -->
-          <div class="filter-pill-row" id="examFilterPillRow">
-            <button class="filter-chip-btn active" data-exam="NEET">🩺 NEET Medical</button>
-            <button class="filter-chip-btn" data-exam="JEE">⚙️ JEE Main & Adv</button>
-            <button class="filter-chip-btn" data-exam="KEAM">🏛️ KEAM Kerala</button>
-            <button class="filter-chip-btn" data-exam="ALL">All Exams</button>
+        <!-- Cohesive Two-Tier Filter Navigation Card -->
+        <div class="catalog-filter-card">
+          <!-- Primary Exam Segmented Bar -->
+          <div class="exam-segmented-bar" id="examFilterPillRow">
+            <button class="filter-chip-btn exam-seg-btn active" data-exam="NEET">
+              <span class="seg-icon">🩺</span>
+              <span class="seg-label">NEET Medical</span>
+            </button>
+            <button class="filter-chip-btn exam-seg-btn" data-exam="JEE">
+              <span class="seg-icon">⚙️</span>
+              <span class="seg-label">JEE Main &amp; Adv</span>
+            </button>
+            <button class="filter-chip-btn exam-seg-btn" data-exam="KEAM">
+              <span class="seg-icon">🏛️</span>
+              <span class="seg-label">KEAM Kerala</span>
+            </button>
+            <button class="filter-chip-btn exam-seg-btn" data-exam="ALL">
+              <span class="seg-icon">🌐</span>
+              <span class="seg-label">All Exams</span>
+            </button>
           </div>
 
-          <div class="filter-divider"></div>
+          <!-- Secondary Filter Row: Clean Sub-Filters for Stage & Language -->
+          <div class="subfilters-row">
+            <div class="subfilter-group">
+              <span class="subfilter-label">Batch:</span>
+              <div class="subfilter-chips">
+                <button class="filter-chip-btn active stage-pill" data-stage="ALL">All Stages</button>
+                <button class="filter-chip-btn stage-pill" data-stage="Repeater / Dropper">Repeaters</button>
+                <button class="filter-chip-btn stage-pill" data-stage="Class 12 Regular">Class 12</button>
+                <button class="filter-chip-btn stage-pill" data-stage="Class 11 Two-Year">Class 11</button>
+                <button class="filter-chip-btn stage-pill" data-stage="Crash Course">Crash</button>
+              </div>
+            </div>
 
-          <!-- Stage & Language Sub-Pills -->
-          <div class="filter-pill-row">
-            <button class="filter-chip-btn active stage-pill" data-stage="ALL">All Stages</button>
-            <button class="filter-chip-btn stage-pill" data-stage="Repeater / Dropper">Repeaters</button>
-            <button class="filter-chip-btn stage-pill" data-stage="Class 12 Regular">Class 12</button>
-            <button class="filter-chip-btn stage-pill" data-stage="Class 11 Two-Year">Class 11 (2-Yr)</button>
-            <button class="filter-chip-btn stage-pill" data-stage="Crash Course">Crash</button>
-          </div>
+            <div class="subfilter-divider"></div>
 
-          <div class="filter-divider"></div>
-
-          <div class="filter-pill-row">
-            <button class="filter-chip-btn active medium-pill" data-medium="ALL">All Mediums</button>
-            <button class="filter-chip-btn medium-pill" data-medium="Malayalam">Malayalam</button>
-            <button class="filter-chip-btn medium-pill" data-medium="English">Pure English</button>
+            <div class="subfilter-group">
+              <span class="subfilter-label">Medium:</span>
+              <div class="subfilter-chips">
+                <button class="filter-chip-btn active medium-pill" data-medium="ALL">All Mediums</button>
+                <button class="filter-chip-btn medium-pill" data-medium="Malayalam">Malayalam</button>
+                <button class="filter-chip-btn medium-pill" data-medium="English">Pure English</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

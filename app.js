@@ -202,11 +202,40 @@ document.addEventListener("DOMContentLoaded", () => {
   openCompareFromStickyBtn.addEventListener("click", () => switchTab("comparison"));
 
   // ------------------------------------------------------------------------
-  // Exam Selection (Dropdown & Minimalist Pills)
+  // Exam Selection (Modern Custom Dropdown & Minimalist Pills)
   // ------------------------------------------------------------------------
+  const examLabels = {
+    "NEET": { icon: "🩺", text: "NEET Medical" },
+    "JEE": { icon: "⚙️", text: "JEE Main & Adv" },
+    "KEAM": { icon: "🏛️", text: "KEAM Kerala" },
+    "ALL": { icon: "🌐", text: "All Categories" }
+  };
+
+  const sortLabels = {
+    "featured": "Featured",
+    "price-asc": "Price: Low to High",
+    "price-desc": "Price: High to Low",
+    "rating-desc": "Highest Rated"
+  };
+
   function selectExam(examCode) {
     state.activeExam = examCode;
     if (headerExamDropdown) headerExamDropdown.value = examCode;
+
+    // Update custom modern category dropdown display
+    const categoryDropdownText = document.getElementById("categoryDropdownText");
+    const categoryDropdownIcon = document.getElementById("categoryDropdownIcon");
+    if (categoryDropdownText && examLabels[examCode]) {
+      categoryDropdownText.textContent = examLabels[examCode].text;
+    }
+    if (categoryDropdownIcon && examLabels[examCode]) {
+      categoryDropdownIcon.textContent = examLabels[examCode].icon;
+    }
+
+    // Update active state in modern dropdown options
+    document.querySelectorAll("#categoryDropdownMenu .dropdown-opt-btn").forEach(opt => {
+      opt.classList.toggle("active", opt.getAttribute("data-exam") === examCode);
+    });
 
     document.querySelectorAll("#examFilterPillRow .filter-chip-btn").forEach(btn => {
       btn.classList.toggle("active", btn.getAttribute("data-exam") === examCode);
@@ -218,6 +247,59 @@ document.addEventListener("DOMContentLoaded", () => {
       renderInstituteGroupedDirectory();
     }
   }
+
+  // Modern Dropdown Elements
+  const categoryDropdownWrap = document.getElementById("categoryDropdownWrap");
+  const categoryDropdownBtn = document.getElementById("categoryDropdownBtn");
+  const sortDropdownWrap = document.getElementById("sortDropdownWrap");
+  const sortDropdownBtn = document.getElementById("sortDropdownBtn");
+  const sortDropdownText = document.getElementById("sortDropdownText");
+
+  // Category Dropdown Toggle & Selection
+  categoryDropdownBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    sortDropdownWrap?.classList.remove("open");
+    categoryDropdownWrap?.classList.toggle("open");
+  });
+
+  document.querySelectorAll("#categoryDropdownMenu .dropdown-opt-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const exam = btn.getAttribute("data-exam");
+      selectExam(exam);
+      categoryDropdownWrap?.classList.remove("open");
+    });
+  });
+
+  // Sort Dropdown Toggle & Selection
+  sortDropdownBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    categoryDropdownWrap?.classList.remove("open");
+    sortDropdownWrap?.classList.toggle("open");
+  });
+
+  document.querySelectorAll("#sortDropdownMenu .dropdown-opt-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const sortVal = btn.getAttribute("data-sort");
+      state.sortBy = sortVal;
+      if (sortDropdown) sortDropdown.value = sortVal;
+      if (sortDropdownText && sortLabels[sortVal]) {
+        sortDropdownText.textContent = sortLabels[sortVal];
+      }
+      document.querySelectorAll("#sortDropdownMenu .dropdown-opt-btn").forEach(opt => {
+        opt.classList.toggle("active", opt.getAttribute("data-sort") === sortVal);
+      });
+      sortDropdownWrap?.classList.remove("open");
+      renderInstituteGroupedDirectory();
+    });
+  });
+
+  // Close dropdowns when clicking anywhere outside
+  document.addEventListener("click", () => {
+    categoryDropdownWrap?.classList.remove("open");
+    sortDropdownWrap?.classList.remove("open");
+  });
 
   headerExamDropdown?.addEventListener("change", (e) => {
     selectExam(e.target.value);
@@ -251,9 +333,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Sort dropdown
-  sortDropdown.addEventListener("change", (e) => {
+  // Sort dropdown fallback
+  sortDropdown?.addEventListener("change", (e) => {
     state.sortBy = e.target.value;
+    if (sortDropdownText && sortLabels[e.target.value]) {
+      sortDropdownText.textContent = sortLabels[e.target.value];
+    }
     renderInstituteGroupedDirectory();
   });
 
@@ -264,6 +349,18 @@ document.addEventListener("DOMContentLoaded", () => {
       switchTab("directory");
     }
     renderInstituteGroupedDirectory();
+  });
+
+  // Keyboard shortcut: Cmd+K / Ctrl+K or '/' to focus search
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      globalSearchInput?.focus();
+      globalSearchInput?.select();
+    } else if (e.key === "/" && document.activeElement !== globalSearchInput && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) {
+      e.preventDefault();
+      globalSearchInput?.focus();
+    }
   });
 
   // ------------------------------------------------------------------------
@@ -726,6 +823,12 @@ document.addEventListener("DOMContentLoaded", () => {
               ${escapeHTML(post.content)}
             </p>
 
+            ${post.content && post.content.length > 180 ? `
+              <button class="post-expand-toggle-btn" data-post-id="${post.id}" type="button">
+                <span>Read more ▾</span>
+              </button>
+            ` : ""}
+
             <div class="post-action-bar">
               <button class="post-action-btn open-thread-trigger" data-post-id="${post.id}">
                 💬 ${post.commentsCount || (post.comments ? post.comments.length : 0)} Comments
@@ -752,6 +855,17 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".vote-down-btn").forEach(btn => {
       btn.addEventListener("click", (e) => {
         handlePostVote(e.currentTarget.getAttribute("data-post-id"), -1);
+      });
+    });
+
+    document.querySelectorAll(".post-expand-toggle-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const card = e.currentTarget.closest(".reddit-post-card");
+        if (card) {
+          const isExp = card.classList.toggle("expanded");
+          btn.innerHTML = isExp ? "<span>Show less ▴</span>" : "<span>Read more ▾</span>";
+        }
       });
     });
 
@@ -848,21 +962,66 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="comment-list">
           ${comments.length === 0 ? `<p style="font-size:13.5px; color:var(--text-muted)">No comments yet. Share your experience!</p>` : ""}
           ${comments.map(c => `
-            <div class="comment-item">
-              <div class="comment-meta">
-                <strong>u/${escapeHTML(c.author)}</strong>
-                ${c.authorBadge ? `<span class="verified-tag">${escapeHTML(c.authorBadge)}</span>` : ""}
-                <span>• ${escapeHTML(c.timeAgo || "Just now")}</span>
-              </div>
-              <div class="comment-text">${escapeHTML(c.text)}</div>
-              <div class="comment-actions">
-                <span style="font-weight:700; color:var(--primary);">▲ ${c.upvotes || 1} upvotes</span>
+            <div class="comment-item" data-comment-id="${c.id}">
+              <div class="comment-threadline" title="Click to collapse / expand thread"></div>
+              <div class="comment-inner">
+                <div class="comment-meta">
+                  <button class="comment-collapse-btn" title="Collapse comment thread" data-comment-id="${c.id}" type="button">[-]</button>
+                  <strong>u/${escapeHTML(c.author)}</strong>
+                  ${c.authorBadge ? `<span class="verified-tag">${escapeHTML(c.authorBadge)}</span>` : ""}
+                  <span>• ${escapeHTML(c.timeAgo || "Just now")}</span>
+                  <span class="collapsed-indicator" style="display:none; font-style:italic; color:var(--text-muted); cursor:pointer;" data-comment-id="${c.id}">(collapsed • click to expand)</span>
+                </div>
+                <div class="comment-body-collapsible">
+                  <div class="comment-text">${escapeHTML(c.text)}</div>
+                  <div class="comment-actions">
+                    <button class="comment-upvote-btn" data-cid="${c.id}" type="button">▲ Upvote (${c.upvotes || 1})</button>
+                    <button class="comment-reply-trigger" data-author="${escapeHTML(c.author)}" type="button">Reply</button>
+                  </div>
+                </div>
               </div>
             </div>
           `).join("")}
         </div>
       </div>
     `;
+
+    // Reddit-style Comment Collapse/Expand Listeners
+    modalThreadBody.querySelectorAll(".comment-collapse-btn, .comment-threadline, .collapsed-indicator").forEach(el => {
+      el.addEventListener("click", (e) => {
+        const item = e.currentTarget.closest(".comment-item");
+        if (item) {
+          const isCollapsed = item.classList.toggle("collapsed");
+          const btn = item.querySelector(".comment-collapse-btn");
+          if (btn) btn.textContent = isCollapsed ? "[+]" : "[-]";
+        }
+      });
+    });
+
+    // Upvote Comment
+    modalThreadBody.querySelectorAll(".comment-upvote-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const cid = e.currentTarget.getAttribute("data-cid");
+        const comment = post.comments?.find(c => c.id === cid);
+        if (comment) {
+          comment.upvotes = (comment.upvotes || 1) + 1;
+          savePosts();
+          renderThreadModalContent(post);
+        }
+      });
+    });
+
+    // Reply prefill helper
+    modalThreadBody.querySelectorAll(".comment-reply-trigger").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const author = e.currentTarget.getAttribute("data-author");
+        const replyInput = document.getElementById("replyTextInput");
+        if (replyInput) {
+          replyInput.value = `@u/${author} `;
+          replyInput.focus();
+        }
+      });
+    });
 
     document.getElementById("submitReplyBtn")?.addEventListener("click", () => {
       const text = document.getElementById("replyTextInput").value.trim();
