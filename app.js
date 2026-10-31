@@ -366,6 +366,38 @@ document.addEventListener("DOMContentLoaded", () => {
   // ------------------------------------------------------------------------
   // Institute-Ordered Directory Rendering
   // ------------------------------------------------------------------------
+  function getInstituteBadgeText(inst) {
+    if (!inst) return "";
+    const code = (inst.shortCode || "").trim();
+    if (code) {
+      if (code.includes(" ")) {
+        const parts = code.split(/\s+/);
+        if (parts[0].toUpperCase() === "PC" && parts[1]) {
+          return "PCT";
+        }
+        return parts.map(p => p[0]).join("").toUpperCase();
+      }
+      return code;
+    }
+    return (inst.name || "")
+      .replace(/[()]/g, "")
+      .split(/\s+/)
+      .slice(0, 3)
+      .map(p => p[0])
+      .join("")
+      .toUpperCase();
+  }
+
+  function getBadgeFontSize(text) {
+    const len = (text || "").length;
+    if (len <= 2) return "14.5px";
+    if (len === 3) return "12.5px";
+    if (len === 4) return "11px";
+    if (len === 5) return "9.5px";
+    if (len === 6) return "8.5px";
+    return "7.5px";
+  }
+
   function renderInstituteGroupedDirectory() {
     let totalMatchingBatches = 0;
     const instituteBlocksHTML = [];
@@ -423,13 +455,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (instBatches.length > 0) {
         totalMatchingBatches += instBatches.length;
 
+        const badgeText = getInstituteBadgeText(inst);
+        const badgeFontSize = getBadgeFontSize(badgeText);
+
         // Render clean, spacious Institute Card with its batches
         instituteBlocksHTML.push(`
           <div class="institute-group-card">
             <!-- Institute Header Profile -->
             <div class="institute-header-banner">
               <div class="institute-profile">
-                <div class="institute-logo-badge">${escapeHTML(inst.shortCode)}</div>
+                <div class="institute-logo-badge" style="font-size: ${badgeFontSize};">${escapeHTML(badgeText)}</div>
                 <div class="institute-meta">
                   <h3>${escapeHTML(inst.name)}</h3>
                   <p>📍 ${escapeHTML(inst.location)} • Estd. ${escapeHTML(inst.established)}</p>

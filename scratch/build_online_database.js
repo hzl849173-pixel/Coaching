@@ -23,7 +23,7 @@ const INSTITUTES_CONFIG = [
   {
     "id": "eduport",
     "name": "Eduport Learning",
-    "shortCode": "EDUPORT",
+    "shortCode": "EDU",
     "location": "Online Live & Adapt AI App",
     "established": "2019",
     "reputationTag": "Tech-Forward • Adapt AI Pioneer",
@@ -32,7 +32,7 @@ const INSTITUTES_CONFIG = [
   {
     "id": "examwinner",
     "name": "Exam Winner Learning",
-    "shortCode": "EXAM WINNER",
+    "shortCode": "EW",
     "location": "Online Live Web & Mobile App",
     "established": "2019",
     "reputationTag": "Board + NEET Powerhouse • Millions of Aspirants",
@@ -41,7 +41,7 @@ const INSTITUTES_CONFIG = [
   {
     "id": "pcthomas",
     "name": "Prof. P.C. Thomas & Chaithanya Classes",
-    "shortCode": "PC THOMAS",
+    "shortCode": "PCT",
     "location": "Online Video Portal & Courier DLP",
     "established": "1969",
     "reputationTag": "Kerala Coaching Legend • Uncompromising Rigor",
@@ -86,7 +86,7 @@ const INSTITUTES_CONFIG = [
   {
     "id": "srichaitanya",
     "name": "Sri Chaitanya (Infinity Learn)",
-    "shortCode": "SRI CHAITANYA",
+    "shortCode": "SC",
     "location": "Infinity Learn App & Live Portal",
     "established": "1986",
     "reputationTag": "National Rank Factory • MEDICON & ELITE",
@@ -95,7 +95,7 @@ const INSTITUTES_CONFIG = [
   {
     "id": "narayana",
     "name": "Narayana Digital (CO-SPARK)",
-    "shortCode": "NARAYANA",
+    "shortCode": "NAR",
     "location": "Narayana Live & e-Chaitanya",
     "established": "1979",
     "reputationTag": "Olympiad & JEE Rigor • CO-SPARK Engine",
@@ -104,7 +104,7 @@ const INSTITUTES_CONFIG = [
   {
     "id": "vedantu",
     "name": "Vedantu Learning",
-    "shortCode": "VEDANTU",
+    "shortCode": "VED",
     "location": "WAVE 2.0 Live Learning App",
     "established": "2014",
     "reputationTag": "Interactive LIVE Pioneer • Tatva Books",
@@ -113,7 +113,7 @@ const INSTITUTES_CONFIG = [
   {
     "id": "time",
     "name": "T.I.M.E. Online",
-    "shortCode": "T.I.M.E.",
+    "shortCode": "TIME",
     "location": "T.I.M.E. Online Portal & Live App",
     "established": "1992",
     "reputationTag": "Kerala Heritage • National Test Rigor",
@@ -131,7 +131,7 @@ const INSTITUTES_CONFIG = [
   {
     "id": "neetprep",
     "name": "Neetprep Online",
-    "shortCode": "NEETPREP",
+    "shortCode": "NP",
     "location": "Neetprep Learning App & Web",
     "established": "2017",
     "reputationTag": "Pure NEET Specialization • NCERT Question Bank",
@@ -140,7 +140,7 @@ const INSTITUTES_CONFIG = [
   {
     "id": "careerpoint",
     "name": "eCareerPoint (Career Point Online)",
-    "shortCode": "CAREER POINT",
+    "shortCode": "CP",
     "location": "eCareerPoint Live Learning App",
     "established": "1993",
     "reputationTag": "Kota Pioneer • High Affordability Live",
@@ -185,7 +185,7 @@ const INSTITUTES_CONFIG = [
   {
     "id": "unacademy",
     "name": "Unacademy Kerala",
-    "shortCode": "UNACAD",
+    "shortCode": "UNA",
     "location": "Unacademy Live App",
     "established": "2015",
     "reputationTag": "Flexible Schedules • Elite Educators",

@@ -746,16 +746,26 @@ body.dark-theme .filter-chip-btn.active {
 .institute-logo-badge {
   width: 44px;
   height: 44px;
+  min-width: 44px;
+  max-width: 44px;
+  flex-shrink: 0;
   border-radius: var(--radius-sm);
   background-color: var(--bg-page);
   color: var(--text-primary);
   font-weight: 800;
-  font-size: 14px;
+  font-size: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   border: 1px solid var(--border-subtle);
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
+  overflow: hidden;
+  padding: 2px 3px;
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 .institute-meta h3 {
